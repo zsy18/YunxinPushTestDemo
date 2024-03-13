@@ -39,6 +39,8 @@ public class MainActivity extends AppCompatActivity {
         initView();
         registerImListener(true);
         checkPermission();
+        //关闭消息提醒，防止干扰推送测试。
+        NIMClient.toggleNotification(false);
     }
 
     private void initView() {
@@ -151,7 +153,6 @@ public class MainActivity extends AppCompatActivity {
                 default:
                     break;
             }
-            // TODO: 2022/11/21
             tvLoginStatus.setText(userStatus);
             Log.e("mytest","登录状态："+userStatus);
             //判断当前状态是否要进行手动登录。
@@ -160,6 +161,4 @@ public class MainActivity extends AppCompatActivity {
             }
         }
     };
-
-
 }

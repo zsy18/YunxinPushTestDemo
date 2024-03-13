@@ -10,7 +10,16 @@ ext{
      * 如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中
      * 的google-services.json文件
      */
-    //配置在云信控制台设置的FCM推送证书的名字
+    //云信控制台上FCM推送证书的名
     fcmCertificateName = "myfcmtest"
+    /**
+     * 小米推送相关配置信息
+     */
+    //小米推送平台获取到的AppId
+    xmAppId = "2882303761520055541"
+    //小米推送平台获取到的AppKey
+    xmAppKey = "5222005592541"
+    //云信控制台上小米推送对应的证书名
+    xmCertificateName = "xiaomi_test1"
 
 }

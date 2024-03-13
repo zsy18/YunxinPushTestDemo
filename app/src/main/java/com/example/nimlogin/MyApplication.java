@@ -63,7 +63,10 @@ public class MyApplication extends Application {
         MixPushConfig pushConfig = new MixPushConfig();
         //获取config.gradle文件中的厂商推送配置信息
         pushConfig.fcmCertificateName = BuildConfig.fcmCertificateName;
-
+        // 传入从小米推送平台获取到的AppId与AppKey,以及云信控制台上小米推送对应的证书名
+        pushConfig.xmAppId = BuildConfig.xmAppId;
+        pushConfig.xmAppKey = BuildConfig.xmAppKey;
+        pushConfig.xmCertificateName = BuildConfig.xmCertificateName;
         return pushConfig;
     }
 }
