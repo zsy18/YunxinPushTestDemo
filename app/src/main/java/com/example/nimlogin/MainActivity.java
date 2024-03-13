@@ -6,31 +6,28 @@ import androidx.core.content.ContextCompat;
 
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.Debug;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.RequestCallback;
 import com.netease.nimlib.sdk.StatusCode;
 import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.auth.AuthServiceObserver;
-import com.netease.nimlib.sdk.auth.LoginInfo;
+import com.netease.nimlib.sdk.mixpush.MixPushServiceObserve;
+import com.netease.nimlib.sdk.mixpush.model.MixPushToken;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
-import com.netease.nimlib.sdk.msg.model.RecentContact;
 
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView tvLoginStatus;
+    private TextView tvLoginStatus,tvToken;
     private Button btnLogout;
     private static final String TEST_ACCID = "改为发送端的accid";
     private boolean hasUpdate = false;
@@ -40,24 +37,14 @@ public class MainActivity extends AppCompatActivity {
         NIMClient.getService(MsgService.class).setChattingAccount(MsgService.MSG_CHATTING_ACCOUNT_NONE, SessionTypeEnum.None);
         setContentView(R.layout.activity_main);
         initView();
-        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver,true);
-        boolean hasPermission = checkPermission("android.permission.POST_NOTIFICATIONS");
-        if (!hasPermission){
-            requestPermission();
-        }
+        registerImListener(true);
+        checkPermission();
+    }
 
-    }
-    // 请求权限
-    private void requestPermission() {
-        String[] permissions = new String[]{"android.permission.POST_NOTIFICATIONS"};
-        ActivityCompat.requestPermissions(this, permissions, 100);
-    }
-    private boolean checkPermission(String permission) {
-        return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
-    }
     private void initView() {
         tvLoginStatus = findViewById(R.id.tv_login_status);
         btnLogout = findViewById(R.id.btn_logout);
+        tvToken = findViewById(R.id.tv_token);
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,42 +54,49 @@ public class MainActivity extends AppCompatActivity {
                 NIMClient.getService(AuthService.class).logout();
             }
         });
-        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(new Observer<List<IMMessage>>() {
-            @Override
-            public void onEvent(List<IMMessage> imMessages) {
-                if (TEST_ACCID.equals(imMessages.get(0).getSessionId())){
-                    RecentContact recentContact = NIMClient.getService(MsgService.class)
-                            .queryRecentContact(TEST_ACCID, SessionTypeEnum.P2P);
-                    String toast = "收到消息，会话："+recentContact.getContactId()+"的tag值为："+recentContact.getTag();
-                    Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
-                    if (!hasUpdate&&recentContact.getTag()!=100){
-                        //保证永远只更新一次tag值
-                        hasUpdate = true;
-                        recentContact.setTag(100);
-                        NIMClient.getService(MsgService.class).updateRecent(recentContact);
-                    }
-                }
-            }
-        },true);
         findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                RecentContact recentContact = NIMClient.getService(MsgService.class)
-                        .queryRecentContact(TEST_ACCID, SessionTypeEnum.P2P);
-                String toast = "会话"+recentContact.getContactId()+"的tag值为："+recentContact.getTag();
-                Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
             }
         });
+    }
 
+    private void registerImListener(boolean register) {
+        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver,register);
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver,register);
+        NIMClient.getService(MixPushServiceObserve.class).observeMixPushToken(mixPushTokenObserver,register);
+    }
+
+    private void checkPermission() {
+        String permission = "android.permission.POST_NOTIFICATIONS";
+        boolean hasPermission = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
+        if (!hasPermission){
+            String[] permissions = new String[]{permission};
+            ActivityCompat.requestPermissions(this, permissions, 100);
+        }
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver,false);
+        registerImListener(false);
 
     }
+    private Observer mixPushTokenObserver = new Observer<MixPushToken>() {
+        @Override
+        public void onEvent(MixPushToken mixPushToken) {
 
+            tvToken.setText(mixPushToken.getTokenName()+"证书的token: "+mixPushToken.getToken());
+
+        }
+    };
+    private Observer receiveMessageObserver = new Observer<List<IMMessage>>() {
+        @Override
+        public void onEvent(List<IMMessage> imMessages) {
+            String toast = "收到消息，会话："+imMessages.get(0).getSessionId();
+            Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
+        }
+    };
     /**
      * 用户在线状态观察者
      */
