@@ -1,14 +1,12 @@
 ext{
     //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
-    APP_KEY = "45c6af3c98409b18a84451215d0bdd6e"
+    APP_KEY = "4727023efa991d31d61b3b32e819bd5b"
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
     APPLICATION_ID = "com.netease.nim.demo"
     /**
      * FCM推送相关配置:
-     * 如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的
-     * id "com.google.gms.google-services"配置，防止编译不通过
-     * 如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中
-     * 的google-services.json文件
+     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
+     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
      */
     //云信控制台上FCM推送证书的名
     fcmCertificateName = "myfcmtest"
@@ -21,5 +19,18 @@ ext{
     xmAppKey = "5222005592541"
     //云信控制台上小米推送对应的证书名
     xmCertificateName = "xiaomi_test1"
+    /**
+     * 华为推送相关配置：
+     * 1、如不使用华为推送，需要删除app/build.gradle文件下的plugin里的 id 'com.huawei.agconnect'配置，防止编译不通过
+     * 2、如果使用华为推送，需要用华为官网上下载的客户端json证书替换项目中的agconnect-services.json文件
+     * 3、华为推送token生成需要在华为控制台应用下添加打包签名文件的证书指纹，下面的证书指纹为本项目debug.keystore的SHA256值
+     * 可以添加到对应测试应用的“SHA256证书指纹”配置项中，或者把已经添加过证书指纹的keystore文件替换本项目的debug.keystore文件。
+     * 否则会出现错误：“6003: certificate fingerprint error”
+     * SHA256: 45:C9:74:1D:F5:67:38:42:A8:0A:C4:BD:BF:45:01:D9:4B:E5:04:79:F1:07:5E:28:CC:E8:12:D1:B2:C4:E8:8C
+     */
+    // 传入华为推送的APP ID
+    hwAppId = "104770765"
+    // 传入云信控制台上华为推送证书名
+    hwCertificateName = "huaweiceshi"
 
 }

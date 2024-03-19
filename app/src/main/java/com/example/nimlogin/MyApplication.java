@@ -14,6 +14,7 @@ import com.netease.nimlib.sdk.StatusBarNotificationFilter;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.mixpush.MixPushConfig;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
+import com.netease.nimlib.sdk.util.NIMUtil;
 
 public class MyApplication extends Application {
     /**
@@ -34,30 +35,16 @@ public class MyApplication extends Application {
             loginInfo = new LoginInfo(account, token);
         }
         SDKOptions sdkOptions = new SDKOptions();
-        StatusBarNotificationConfig config = new StatusBarNotificationConfig();
-        // 点击通知需要跳转到的界面
-        // 通知铃声的uri字符串
-        config.notificationFoldStyle = NotificationFoldStyle.CONTACT;
-        config.downTimeEnableNotification = true;
-        // 呼吸灯配置
-        config.ledARGB = Color.GREEN;
-        config.ledOnMs = 1000;
-        config.ledOffMs = 1500;
-        // 是否APP ICON显示未读数红点(Android O有效)
-        config.showBadge = true;
-        config.notificationFilter = new StatusBarNotificationFilter() {
-            @Override
-            public FilterPolicy apply(IMMessage imMessage) {
-                return FilterPolicy.PERMIT;
-            }
-        };
-
-
         sdkOptions.mixPushConfig = loadPushConfig();
-        sdkOptions.statusBarNotificationConfig = config;
         sdkOptions.sdkStorageRootPath = getExternalCacheDir().getPath() + "/nim";
 
         NIMClient.init(this, loginInfo, sdkOptions);
+        if (NIMUtil.isMainProcess(this)) {
+
+            // 在此处添加以下代码
+            com.huawei.hms.support.common.ActivityMgr.INST.init(this);
+
+        }
     }
     private MixPushConfig loadPushConfig(){
         MixPushConfig pushConfig = new MixPushConfig();
@@ -67,6 +54,10 @@ public class MyApplication extends Application {
         pushConfig.xmAppId = BuildConfig.xmAppId;
         pushConfig.xmAppKey = BuildConfig.xmAppKey;
         pushConfig.xmCertificateName = BuildConfig.xmCertificateName;
+
+        // 华为推送
+        pushConfig.hwAppId = BuildConfig.hwAppId;
+        pushConfig.hwCertificateName = BuildConfig.hwCertificateName;
         return pushConfig;
     }
 }
