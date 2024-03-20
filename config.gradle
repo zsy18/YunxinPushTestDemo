@@ -19,6 +19,7 @@ ext{
     xmAppKey = "5222005592541"
     //云信控制台上小米推送对应的证书名
     xmCertificateName = "xiaomi_test1"
+
     /**
      * 华为推送相关配置：
      * 1、如不使用华为推送，需要删除app/build.gradle文件下的plugin里的 id 'com.huawei.agconnect'配置，防止编译不通过
@@ -32,5 +33,38 @@ ext{
     hwAppId = "104770765"
     // 传入云信控制台上华为推送证书名
     hwCertificateName = "huaweiceshi"
+
+    /**
+     * 荣耀推送相关配置
+     */
+    // 传入荣耀推送证书名，荣耀推送的 appId请在 AndroidManifest.xml 文件中配置
+    honorAppId = "100100577"
+    honorCertificateName = "honorTest"
+    /**
+     * vivo推送相关配置
+     */
+    //// 传入云信控制台上配置的vivo推送证书名,vivo 推送的 appId appKey请在 AndroidManifest.xml 文件中配置
+    vivoCertificateName = "vivoTest"
+    //你的 vivo 推送 app key
+    vivoAppKey = "a51da7ed008d22de3ad7937be1e707f7"
+    //你的 vivo 推送的 app id
+    vivoAppId = "103397457"
+
+    /**
+     * OPPO推送相关配置
+     */
+    oppoAppId = "3477155"
+    oppoAppKey = "6clw0ue1oZ8cCOogKg488o0os"
+    // 注意区分AppSercet与MasterSecret
+    oppoAppSercet = "e163705Bd018bABb3e2362C440A94673"
+    // 传入云信控制台上配置的oppo推送证书名
+    oppoCertificateName = "oppoTest"
+    /**
+     * 魅族推送相关配置
+     */
+    mzAppId = ""
+    mzAppKey = ""
+    // 传入云信控制台上配置的魅族推送证书名
+    mzCertificateName = ""
 
 }

@@ -20,14 +20,32 @@ android {
             //设置支持的SO库架构
             abiFilters "armeabi-v7a", "x86","arm64-v8a","x86_64"
         }
-        manifestPlaceholders = [APP_KEY:rootProject.ext.APP_KEY]
+        manifestPlaceholders = [APP_KEY:rootProject.ext.APP_KEY,
+                                honorAppId:rootProject.ext.honorAppId,
+                                vivoAppKey:rootProject.ext.vivoAppKey,
+                                vivoAppId:rootProject.ext.vivoAppId]
 
         buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
+
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
         buildConfigField "String","xmAppKey","\"${rootProject.ext.xmAppKey}\""
         buildConfigField "String","xmCertificateName","\"${rootProject.ext.xmCertificateName}\""
+
         buildConfigField "String","hwAppId","\"${rootProject.ext.hwAppId}\""
         buildConfigField "String","hwCertificateName","\"${rootProject.ext.hwCertificateName}\""
+
+        buildConfigField "String","honorCertificateName","\"${rootProject.ext.honorCertificateName}\""
+
+        buildConfigField "String","vivoCertificateName","\"${rootProject.ext.vivoCertificateName}\""
+
+        buildConfigField "String","oppoAppId","\"${rootProject.ext.oppoAppId}\""
+        buildConfigField "String","oppoAppKey","\"${rootProject.ext.oppoAppKey}\""
+        buildConfigField "String","oppoAppSercet","\"${rootProject.ext.oppoAppSercet}\""
+        buildConfigField "String","oppoCertificateName","\"${rootProject.ext.oppoCertificateName}\""
+
+        buildConfigField "String","mzAppId","\"${rootProject.ext.mzAppId}\""
+        buildConfigField "String","mzAppKey","\"${rootProject.ext.mzAppKey}\""
+        buildConfigField "String","mzCertificateName","\"${rootProject.ext.mzCertificateName}\""
 
     }
     signingConfigs {
@@ -69,5 +87,11 @@ dependencies {
 
     implementation 'com.huawei.hms:push:6.9.0.300'
 
+    implementation 'com.hihonor.mcs:push:7.0.41.301'
 
+
+    //以下依赖都需要添加
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'commons-codec:commons-codec:1.6'
+    implementation 'androidx.annotation:annotation:1.1.0'
 }

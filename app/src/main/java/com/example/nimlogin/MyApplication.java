@@ -4,6 +4,7 @@ import android.app.Application;
 import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.hihonor.push.sdk.HonorPushClient;
 import com.netease.nimlib.push.net.lbs.IPVersion;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.NotificationFoldStyle;
@@ -43,6 +44,7 @@ public class MyApplication extends Application {
 
             // 在此处添加以下代码
             com.huawei.hms.support.common.ActivityMgr.INST.init(this);
+            HonorPushClient.getInstance().init(getApplicationContext(), true);
 
         }
     }
@@ -58,6 +60,17 @@ public class MyApplication extends Application {
         // 华为推送
         pushConfig.hwAppId = BuildConfig.hwAppId;
         pushConfig.hwCertificateName = BuildConfig.hwCertificateName;
+
+        pushConfig.honorCertificateName = BuildConfig.honorCertificateName;
+
+        pushConfig .vivoCertificateName = BuildConfig.vivoCertificateName;
+
+        pushConfig.oppoAppId = BuildConfig.oppoAppId;
+        pushConfig.oppoAppKey = BuildConfig.oppoAppKey;
+// 注意区分AppSercet与MasterSecret
+        pushConfig.oppoAppSercet = BuildConfig.oppoAppSercet;
+// 传入云信控制台上配置的oppo推送证书名
+        pushConfig.oppoCertificateName = BuildConfig.oppoCertificateName;
         return pushConfig;
     }
 }
