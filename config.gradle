@@ -62,9 +62,9 @@ ext{
     /**
      * 魅族推送相关配置
      */
-    mzAppId = ""
-    mzAppKey = ""
+    mzAppId = "148192"
+    mzAppKey = "6068c5a8323542deaf83ad5b6d3ca9e2"
     // 传入云信控制台上配置的魅族推送证书名
-    mzCertificateName = ""
+    mzCertificateName = "meizuTest"
 
 }

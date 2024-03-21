@@ -71,6 +71,10 @@ public class MyApplication extends Application {
         pushConfig.oppoAppSercet = BuildConfig.oppoAppSercet;
 // 传入云信控制台上配置的oppo推送证书名
         pushConfig.oppoCertificateName = BuildConfig.oppoCertificateName;
+        pushConfig.mzAppId = BuildConfig.mzAppId;
+        pushConfig.mzAppKey = BuildConfig.mzAppKey;
+        pushConfig.mzCertificateName = BuildConfig.mzCertificateName;
+
         return pushConfig;
     }
 }

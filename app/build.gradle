@@ -90,8 +90,11 @@ dependencies {
     implementation 'com.hihonor.mcs:push:7.0.41.301'
 
 
-    //以下依赖都需要添加
+    //oppo推送以下依赖都需要添加
     implementation 'com.google.code.gson:gson:2.10.1'
     implementation 'commons-codec:commons-codec:1.6'
     implementation 'androidx.annotation:annotation:1.1.0'
+    //魅族推送sdk
+    implementation 'com.meizu.flyme.internet:push-internal:4.2.3'
+
 }

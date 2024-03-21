@@ -28,6 +28,19 @@
     <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE"/>
     <uses-permission android:name="com.heytap.mcs.permission.RECIEVE_MCS_MESSAGE"/>
 
+    <!-- 兼容 Flyme5 以下版本，魅族内部接入 PushSDK 必填，不然无法收到消息-->
+    <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE"/>
+    <permission
+        android:name="${applicationId}.push.permission.MESSAGE"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="${applicationId}.push.permission.MESSAGE"/>
+    <!-- 兼容 Flyme3 配置权限-->
+    <uses-permission android:name="com.meizu.c2dm.permission.RECEIVE" />
+    <permission
+        android:name="${applicationId}.permission.C2D_MESSAGE"
+        android:protectionLevel="signature"/>
+    <uses-permission android:name="${applicationId}.permission.C2D_MESSAGE"/>
+
     <application
         android:name=".MyApplication"
         android:allowBackup="true"
@@ -202,6 +215,24 @@
                 <action android:name="com.heytap.msp.push.RECEIVE_MCS_MESSAGE"/>
             </intent-filter>
         </service>
+
+        <!--魅族推送配置项-->
+        <receiver android:name="com.netease.nimlib.mixpush.mz.MZPushReceiver"
+            android:exported="true">
+            <intent-filter android:priority="0x7fffffff">
+                <!-- 接收 push 消息 -->
+                <action android:name="com.meizu.flyme.push.intent.MESSAGE" />
+                <!-- 接收 register 消息 -->
+                <action android:name="com.meizu.flyme.push.intent.REGISTER.FEEDBACK" />
+                <!-- 接收 unregister 消息-->
+                <action android:name="com.meizu.flyme.push.intent.UNREGISTER.FEEDBACK"/>
+                <!-- 兼容低版本 Flyme3 推送服务配置 -->
+                <action android:name="com.meizu.c2dm.intent.REGISTRATION" />
+                <action android:name="com.meizu.c2dm.intent.RECEIVE" />
+
+                <category android:name="${applicationId}"/>
+            </intent-filter>
+        </receiver>
 
     </application>
 
