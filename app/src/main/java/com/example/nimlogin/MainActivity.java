@@ -4,9 +4,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import android.annotation.TargetApi;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.media.AudioAttributes;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -25,6 +33,7 @@ import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 
+
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -42,6 +51,20 @@ public class MainActivity extends AppCompatActivity {
         checkPermission();
         //关闭消息提醒，防止干扰推送测试。
         NIMClient.toggleNotification(false);
+        buildNormalNIMMessageChannel();
+    }
+    @TargetApi(Build.VERSION_CODES.O)
+    private void buildNormalNIMMessageChannel() {
+        NotificationManager manager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
+
+        NotificationChannel channel = new NotificationChannel("1", "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("NIM_CHANNEL_DESC");
+        if (true) {
+            // 震动
+            channel.enableVibration(true);
+        }
+
+        manager.createNotificationChannel(channel);
     }
 
     private void initView() {

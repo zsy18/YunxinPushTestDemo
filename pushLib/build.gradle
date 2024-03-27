@@ -1,0 +1,89 @@
+
+
+plugins {
+    id 'com.android.library'
+}
+println("plugins************")
+
+android {
+    namespace 'com.example.pushlib'
+    compileSdk 34
+
+    defaultConfig {
+        minSdk 21
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        consumerProguardFiles "consumer-rules.pro"
+        manifestPlaceholders = [APP_KEY:rootProject.ext.APP_KEY,
+                                honorAppId:rootProject.ext.honorAppId,
+                                vivoAppKey:rootProject.ext.vivoAppKey,
+                                vivoAppId:rootProject.ext.vivoAppId]
+        println("app android************")
+//        plugins.apply("com.huawei.agconnect")
+
+        buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
+
+        buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
+        buildConfigField "String","xmAppKey","\"${rootProject.ext.xmAppKey}\""
+        buildConfigField "String","xmCertificateName","\"${rootProject.ext.xmCertificateName}\""
+
+        buildConfigField "String","hwAppId","\"${rootProject.ext.hwAppId}\""
+        buildConfigField "String","hwCertificateName","\"${rootProject.ext.hwCertificateName}\""
+
+        buildConfigField "String","honorCertificateName","\"${rootProject.ext.honorCertificateName}\""
+
+        buildConfigField "String","vivoCertificateName","\"${rootProject.ext.vivoCertificateName}\""
+
+        buildConfigField "String","oppoAppId","\"${rootProject.ext.oppoAppId}\""
+        buildConfigField "String","oppoAppKey","\"${rootProject.ext.oppoAppKey}\""
+        buildConfigField "String","oppoAppSercet","\"${rootProject.ext.oppoAppSercet}\""
+        buildConfigField "String","oppoCertificateName","\"${rootProject.ext.oppoCertificateName}\""
+
+        buildConfigField "String","mzAppId","\"${rootProject.ext.mzAppId}\""
+        buildConfigField "String","mzAppKey","\"${rootProject.ext.mzAppKey}\""
+        buildConfigField "String","mzCertificateName","\"${rootProject.ext.mzCertificateName}\""
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
+    println("android************")
+    rootProject.getAllprojects().forEach {
+        println("getAllprojects:"+it.name)
+        if (it.plugins.hasPlugin("com.android.application")){
+//            it.plugins.apply("com.huawei.agconnect")
+        }
+    }
+
+}
+
+dependencies {
+    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
+
+    api 'com.huawei.hms:push:6.9.0.300'
+    api "com.netease.nimlib:basesdk:${imVersion}"
+    api "com.netease.nimlib:push:${imVersion}"
+
+    // firebase-messaging
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    // firebase-analytics
+    implementation 'com.google.firebase:firebase-analytics:20.0.0'
+    implementation 'com.google.android.gms:play-services-base:18.2.0'
+    api 'com.hihonor.mcs:push:7.0.41.301'
+
+
+    //oppo推送以下依赖都需要添加
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'commons-codec:commons-codec:1.6'
+    implementation 'androidx.annotation:annotation:1.1.0'
+    //魅族推送sdk
+    implementation 'com.meizu.flyme.internet:push-internal:4.2.3'
+
+}

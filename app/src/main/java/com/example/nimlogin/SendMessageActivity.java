@@ -5,6 +5,7 @@ import androidx.appcompat.widget.SwitchCompat;
 
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -12,10 +13,19 @@ import android.widget.Toast;
 
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
+import com.netease.nimlib.sdk.friend.FriendService;
+import com.netease.nimlib.sdk.friend.constant.VerifyType;
+import com.netease.nimlib.sdk.friend.model.AddFriendData;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
+
+import org.json.JSONObject;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public class SendMessageActivity extends AppCompatActivity {
     private EditText etToAccid;
@@ -41,11 +51,9 @@ public class SendMessageActivity extends AppCompatActivity {
         String toAccid = etToAccid.getText().toString();
         String content = "测试消息："+sendCount++;
         IMMessage message = MessageBuilder.createTextMessage(toAccid, SessionTypeEnum.P2P,content);
-        String pushPayload = loadPushPayload();
-        if (!TextUtils.isEmpty(pushPayload)){
-//            message.setPushPayload(pushPayload);
 
-        }
+        message.setPushPayload(getPushPayload());
+        message.setPushContent(content);
         NIMClient.getService(MsgService.class).sendMessage(message,false).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
@@ -53,9 +61,36 @@ public class SendMessageActivity extends AppCompatActivity {
                     Toast.makeText(SendMessageActivity.this, "消息发送成功", Toast.LENGTH_SHORT).show();
                 }else {
                     Toast.makeText(SendMessageActivity.this, "消息发送失败", Toast.LENGTH_SHORT).show();
+                    NIMClient.getService(FriendService.class).addFriend(new AddFriendData(toAccid, VerifyType.DIRECT_ADD));
                 }
             }
         });
+    }
+    private Map<String, Object> getPushPayload()
+    {
+        String pushPayloadStr = "{    \"oppoField\": {\n" +
+                "        \n" +
+                "        \"action_parameters\": \"{\\\"sessionID\\\":\\\"17527751793\\\",\\\"sessionType\\\":1}\",\n" +
+                "        \"click_action_type\": \"4\",\n" +
+                "        \"click_action_activity\": \"com.example.nimlogin.NotificationClickActivity\",\n" +
+                "        \"channel_id\": \"1\"\n" +
+                "    }}";
+        Map<String, Object> pushPayload = null;
+        if(!TextUtils.isEmpty(pushPayloadStr)){
+            try {
+                JSONObject object = new JSONObject(pushPayloadStr);
+                pushPayload = new HashMap<>();
+                Iterator<String> keys = object.keys();
+                while (keys.hasNext()) {
+                    String key = keys.next();
+                    pushPayload.put(key, object.get(key));
+                }
+            } catch (Throwable e) {
+                Log.e("TAG", "parse push payload error", e);
+            }
+        }
+
+        return pushPayload;
     }
 
     private String loadPushPayload() {

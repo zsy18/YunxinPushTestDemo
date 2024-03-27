@@ -1,20 +1,13 @@
 package com.example.nimlogin;
 
 import android.app.Application;
-import android.graphics.Color;
 import android.text.TextUtils;
 
+import com.example.pushlib.MixPushConfigGenerator;
 import com.hihonor.push.sdk.HonorPushClient;
-import com.netease.nimlib.push.net.lbs.IPVersion;
 import com.netease.nimlib.sdk.NIMClient;
-import com.netease.nimlib.sdk.NotificationFoldStyle;
 import com.netease.nimlib.sdk.SDKOptions;
-import com.netease.nimlib.sdk.ServerAddresses;
-import com.netease.nimlib.sdk.StatusBarNotificationConfig;
-import com.netease.nimlib.sdk.StatusBarNotificationFilter;
 import com.netease.nimlib.sdk.auth.LoginInfo;
-import com.netease.nimlib.sdk.mixpush.MixPushConfig;
-import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.util.NIMUtil;
 
 public class MyApplication extends Application {
@@ -36,9 +29,8 @@ public class MyApplication extends Application {
             loginInfo = new LoginInfo(account, token);
         }
         SDKOptions sdkOptions = new SDKOptions();
-        sdkOptions.mixPushConfig = loadPushConfig();
+        sdkOptions.mixPushConfig = MixPushConfigGenerator.loadPushConfig();
         sdkOptions.sdkStorageRootPath = getExternalCacheDir().getPath() + "/nim";
-
         NIMClient.init(this, loginInfo, sdkOptions);
         if (NIMUtil.isMainProcess(this)) {
 
@@ -48,33 +40,5 @@ public class MyApplication extends Application {
 
         }
     }
-    private MixPushConfig loadPushConfig(){
-        MixPushConfig pushConfig = new MixPushConfig();
-        //获取config.gradle文件中的厂商推送配置信息
-        pushConfig.fcmCertificateName = BuildConfig.fcmCertificateName;
-        // 传入从小米推送平台获取到的AppId与AppKey,以及云信控制台上小米推送对应的证书名
-        pushConfig.xmAppId = BuildConfig.xmAppId;
-        pushConfig.xmAppKey = BuildConfig.xmAppKey;
-        pushConfig.xmCertificateName = BuildConfig.xmCertificateName;
 
-        // 华为推送
-        pushConfig.hwAppId = BuildConfig.hwAppId;
-        pushConfig.hwCertificateName = BuildConfig.hwCertificateName;
-
-        pushConfig.honorCertificateName = BuildConfig.honorCertificateName;
-
-        pushConfig .vivoCertificateName = BuildConfig.vivoCertificateName;
-
-        pushConfig.oppoAppId = BuildConfig.oppoAppId;
-        pushConfig.oppoAppKey = BuildConfig.oppoAppKey;
-// 注意区分AppSercet与MasterSecret
-        pushConfig.oppoAppSercet = BuildConfig.oppoAppSercet;
-// 传入云信控制台上配置的oppo推送证书名
-        pushConfig.oppoCertificateName = BuildConfig.oppoCertificateName;
-        pushConfig.mzAppId = BuildConfig.mzAppId;
-        pushConfig.mzAppKey = BuildConfig.mzAppKey;
-        pushConfig.mzCertificateName = BuildConfig.mzCertificateName;
-
-        return pushConfig;
-    }
 }

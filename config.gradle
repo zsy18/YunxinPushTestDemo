@@ -1,8 +1,11 @@
 ext{
+
+    imVersion = "9.14.0"
     //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
     APP_KEY = "4727023efa991d31d61b3b32e819bd5b"
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
     APPLICATION_ID = "com.netease.nim.demo"
+    GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
     /**
      * FCM推送相关配置:
      * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
@@ -53,12 +56,12 @@ ext{
     /**
      * OPPO推送相关配置
      */
-    oppoAppId = "3477155"
-    oppoAppKey = "6clw0ue1oZ8cCOogKg488o0os"
+    oppoAppId = "31564223"
+    oppoAppKey = "e5a3fb46306f45c780b3be1f3b1e7c32"
     // 注意区分AppSercet与MasterSecret
-    oppoAppSercet = "e163705Bd018bABb3e2362C440A94673"
+    oppoAppSercet = "0be0ee1ef3fb431587efd2a0f0a30a43"
     // 传入云信控制台上配置的oppo推送证书名
-    oppoCertificateName = "oppoTest"
+    oppoCertificateName = "certificat_oppo"
     /**
      * 魅族推送相关配置
      */
@@ -67,4 +70,46 @@ ext{
     // 传入云信控制台上配置的魅族推送证书名
     mzCertificateName = "meizuTest"
 
+}
+//buildscript {
+//    dependencies {
+//            classpath 'com.android.tools.build:gradle:7.2.0'
+//    }
+//}
+//添加标志位，保证只执行一次
+int count = 0
+gradle.afterProject {
+
+//    println("getName():" + project.name)
+
+    gradle.getRootProject().getAllprojects().forEach {
+        println("afterProject:" + it.name)
+        if (it.plugins.hasPlugin("com.android.application")&&count==0){
+            count = 1
+            it.dependencies{
+                implementation project(path: ':pushLib')
+            }
+            //根据主应用下的华为的agconnect-services.json文件配置决定是否要添加华为的plugin
+            def huaweiJsonPath = "${it.name}/agconnect-services.json"
+            println("huaweiJsonPath:"+huaweiJsonPath)
+            def huaweiJsonConfigFile = file(huaweiJsonPath)
+            if (huaweiJsonConfigFile.exists()){
+                it.plugins.apply("com.huawei.agconnect")
+                println("add huawei plugin")
+            }else {
+                println("huawei json config file is not exists")
+            }
+
+            //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
+            def googleJsonConfigFile = file("${it.name}/google-services.json")
+            if (googleJsonConfigFile.exists()){
+                it.plugins.apply("com.google.gms.google-services")
+                println("add google plugin")
+            }else {
+                println("google json config file is not exists")
+            }
+            println("afterProject main:" + it.name)
+
+        }
+    }
 }

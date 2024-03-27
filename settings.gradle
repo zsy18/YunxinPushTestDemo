@@ -4,8 +4,8 @@ pluginManagement {
         gradlePluginPortal()
         google()
         mavenCentral()
-        maven {url 'https://developer.huawei.com/repo/'}
         maven {url 'https://developer.hihonor.com/repo'}
+        maven {url 'https://developer.huawei.com/repo/'}
 
     }
 }
@@ -14,10 +14,14 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven {url 'https://developer.huawei.com/repo/'}
         maven {url 'https://developer.hihonor.com/repo'}
-
+        maven {url 'https://developer.huawei.com/repo/'}
     }
 }
 rootProject.name = "NIMLogin"
 include ':app'
+include ':pushLib'
+println("settings.gradle:")
+
+
+
