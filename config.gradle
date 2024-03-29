@@ -71,11 +71,6 @@ ext{
     mzCertificateName = "meizuTest"
 
 }
-//buildscript {
-//    dependencies {
-//            classpath 'com.android.tools.build:gradle:7.2.0'
-//    }
-//}
 //添加标志位，保证只执行一次
 int count = 0
 gradle.afterProject {
@@ -108,8 +103,15 @@ gradle.afterProject {
             }else {
                 println("google json config file is not exists")
             }
-            println("afterProject main:" + it.name)
 
+            //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
+            def honerJsonConfigFile = file("${it.name}/mcs-services.json")
+            if (honerJsonConfigFile.exists()){
+                it.plugins.apply("com.hihonor.mcs.asplugin")
+                println("add honer plugin")
+            }else {
+                println("honer json config file is not exists")
+            }
         }
     }
 }

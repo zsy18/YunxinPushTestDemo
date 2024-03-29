@@ -1,13 +1,9 @@
-
-
 plugins {
     id 'com.android.library'
 }
-println("plugins************")
-
 android {
     namespace 'com.example.pushlib'
-    compileSdk 34
+    compileSdk 32
 
     defaultConfig {
         minSdk 21
@@ -19,8 +15,6 @@ android {
                                 vivoAppKey:rootProject.ext.vivoAppKey,
                                 vivoAppId:rootProject.ext.vivoAppId]
         println("app android************")
-//        plugins.apply("com.huawei.agconnect")
-
         buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
 
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
@@ -54,14 +48,6 @@ android {
         sourceCompatibility JavaVersion.VERSION_1_8
         targetCompatibility JavaVersion.VERSION_1_8
     }
-    println("android************")
-    rootProject.getAllprojects().forEach {
-        println("getAllprojects:"+it.name)
-        if (it.plugins.hasPlugin("com.android.application")){
-//            it.plugins.apply("com.huawei.agconnect")
-        }
-    }
-
 }
 
 dependencies {

@@ -4,13 +4,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
 import android.os.Bundle;
-import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.pushlib.pushpayload.PushPayloadBuilder;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.friend.FriendService;
@@ -21,10 +20,6 @@ import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 
-import org.json.JSONObject;
-
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 public class SendMessageActivity extends AppCompatActivity {
@@ -68,29 +63,30 @@ public class SendMessageActivity extends AppCompatActivity {
     }
     private Map<String, Object> getPushPayload()
     {
-        String pushPayloadStr = "{    \"oppoField\": {\n" +
-                "        \n" +
-                "        \"action_parameters\": \"{\\\"sessionID\\\":\\\"17527751793\\\",\\\"sessionType\\\":1}\",\n" +
-                "        \"click_action_type\": \"4\",\n" +
-                "        \"click_action_activity\": \"com.example.nimlogin.NotificationClickActivity\",\n" +
-                "        \"channel_id\": \"1\"\n" +
-                "    }}";
-        Map<String, Object> pushPayload = null;
-        if(!TextUtils.isEmpty(pushPayloadStr)){
-            try {
-                JSONObject object = new JSONObject(pushPayloadStr);
-                pushPayload = new HashMap<>();
-                Iterator<String> keys = object.keys();
-                while (keys.hasNext()) {
-                    String key = keys.next();
-                    pushPayload.put(key, object.get(key));
-                }
-            } catch (Throwable e) {
-                Log.e("TAG", "parse push payload error", e);
-            }
-        }
+//        String pushPayloadStr = "{    \"oppoField\": {\n" +
+//                "        \n" +
+//                "        \"action_parameters\": \"{\\\"sessionID\\\":\\\"17527751793\\\",\\\"sessionType\\\":1}\",\n" +
+//                "        \"click_action_type\": \"4\",\n" +
+//                "        \"click_action_activity\": \"com.example.nimlogin.NotificationClickActivity\",\n" +
+//                "        \"channel_id\": \"1\"\n" +
+//                "    }}";
+//        Map<String, Object> pushPayload = null;
+//        if(!TextUtils.isEmpty(pushPayloadStr)){
+//            try {
+//                JSONObject object = new JSONObject(pushPayloadStr);
+//                pushPayload = new HashMap<>();
+//                Iterator<String> keys = object.keys();
+//                while (keys.hasNext()) {
+//                    String key = keys.next();
+//                    pushPayload.put(key, object.get(key));
+//                }
+//            } catch (Throwable e) {
+//                Log.e("TAG", "parse push payload error", e);
+//            }
+//        }
+//        new PushPayloadBuilder(this).setClickAction(NotificationClickActivity.class);
 
-        return pushPayload;
+        return null;
     }
 
     private String loadPushPayload() {
