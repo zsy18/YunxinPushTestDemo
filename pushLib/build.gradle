@@ -32,10 +32,14 @@ android {
         buildConfigField "String","oppoAppKey","\"${rootProject.ext.oppoAppKey}\""
         buildConfigField "String","oppoAppSercet","\"${rootProject.ext.oppoAppSercet}\""
         buildConfigField "String","oppoCertificateName","\"${rootProject.ext.oppoCertificateName}\""
+        buildConfigField "String","oppoChannelId","\"${rootProject.ext.oppoChannelId}\""
+
 
         buildConfigField "String","mzAppId","\"${rootProject.ext.mzAppId}\""
         buildConfigField "String","mzAppKey","\"${rootProject.ext.mzAppKey}\""
         buildConfigField "String","mzCertificateName","\"${rootProject.ext.mzCertificateName}\""
+
+
     }
 
     buildTypes {

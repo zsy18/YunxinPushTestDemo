@@ -55,19 +55,11 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW"/>
                 <category android:name="android.intent.category.DEFAULT"/>
-
-            </intent-filter>
-            <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
                 <data
                     android:host="com.huawei.codelabpush"
                     android:path="/deeplink"
                     android:scheme="intent"/>
             </intent-filter>
-            <meta-data
-                android:name="111"
-                android:value="ceshi" />
         </activity>
         <activity
             android:name=".SendMessageActivity"

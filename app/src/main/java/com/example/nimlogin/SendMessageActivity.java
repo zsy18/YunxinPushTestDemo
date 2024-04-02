@@ -1,5 +1,7 @@
 package com.example.nimlogin;
 
+import static com.example.nimlogin.NotificationClickActivity.SESSION;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
@@ -9,7 +11,11 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.NotifyClickAction;
+import com.example.pushlib.pushpayload.NotifyEffectMode;
 import com.example.pushlib.pushpayload.PushPayloadBuilder;
+import com.example.pushlib.pushpayload.PushPayloadBuilderType;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.friend.FriendService;
@@ -18,15 +24,21 @@ import com.netease.nimlib.sdk.friend.model.AddFriendData;
 import com.netease.nimlib.sdk.msg.MessageBuilder;
 import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
+import com.netease.nimlib.sdk.msg.model.CustomNotification;
+import com.netease.nimlib.sdk.msg.model.CustomNotificationConfig;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
+
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.Map;
 
 public class SendMessageActivity extends AppCompatActivity {
     private EditText etToAccid;
-    private SwitchCompat swClickNotify,swCustomData;
-    private Button btnSendMessage;
+    private SwitchCompat swClickNotify, swCustomData;
+    private Button btnSendMessage, btnSendCustomNotify;
     private int sendCount = 0;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -41,14 +53,22 @@ public class SendMessageActivity extends AppCompatActivity {
                 sendMessage();
             }
         });
+        btnSendCustomNotify = findViewById(R.id.btn_send_custom_notify);
+        btnSendCustomNotify.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                sendCustomNotify();
+            }
+        });
     }
-    private void sendMessage(){
+
+    private void sendMessage() {
         String toAccid = etToAccid.getText().toString();
         String content = "测试消息："+sendCount++;
         IMMessage message = MessageBuilder.createTextMessage(toAccid, SessionTypeEnum.P2P,content);
-
-        message.setPushPayload(getPushPayload());
-        message.setPushContent(content);
+        message.setPushPayload(getPushPayload(swClickNotify.isChecked(),swCustomData.isChecked()));
+        //如需自定义推送内容，则需要直接通过IMMessage#setPushContent设置，不配置默认使用消息内容。
+        message.setPushContent("测试测试测试");
         NIMClient.getService(MsgService.class).sendMessage(message,false).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
@@ -60,37 +80,71 @@ public class SendMessageActivity extends AppCompatActivity {
                 }
             }
         });
-    }
-    private Map<String, Object> getPushPayload()
-    {
-//        String pushPayloadStr = "{    \"oppoField\": {\n" +
-//                "        \n" +
-//                "        \"action_parameters\": \"{\\\"sessionID\\\":\\\"17527751793\\\",\\\"sessionType\\\":1}\",\n" +
-//                "        \"click_action_type\": \"4\",\n" +
-//                "        \"click_action_activity\": \"com.example.nimlogin.NotificationClickActivity\",\n" +
-//                "        \"channel_id\": \"1\"\n" +
-//                "    }}";
-//        Map<String, Object> pushPayload = null;
-//        if(!TextUtils.isEmpty(pushPayloadStr)){
-//            try {
-//                JSONObject object = new JSONObject(pushPayloadStr);
-//                pushPayload = new HashMap<>();
-//                Iterator<String> keys = object.keys();
-//                while (keys.hasNext()) {
-//                    String key = keys.next();
-//                    pushPayload.put(key, object.get(key));
-//                }
-//            } catch (Throwable e) {
-//                Log.e("TAG", "parse push payload error", e);
-//            }
-//        }
-//        new PushPayloadBuilder(this).setClickAction(NotificationClickActivity.class);
 
-        return null;
+
     }
 
-    private String loadPushPayload() {
+    private void sendCustomNotify() {
+        String toAccid = etToAccid.getText().toString();
+        // 构造自定义通知，指定接收者
+        CustomNotification notification = new CustomNotification();
+        notification.setSendToOnlineUserOnly(false);
+        notification.setSessionId(toAccid);
+        notification.setSessionType(SessionTypeEnum.P2P);
+        CustomNotificationConfig config= new CustomNotificationConfig();
 
-        return null;
+        // 需要推送
+        config.enablePush = true;
+        //通知标题为用户昵称，优先级低于pushpayload中title设置
+        config.enablePushNick = true;
+        notification.setConfig(config);
+        //自定义系统通知必须配置改字段，作为推送的内容，否则推送不触发。
+        notification.setApnsText("自定义通知测试");
+        notification.setPushPayload(getPushPayload(swClickNotify.isChecked(), swCustomData.isChecked()));
+
+        // 构建通知的具体内容。为了可扩展性，这里采用 json 格式，以 "id" 作为类型区分。
+        JSONObject json = new JSONObject();
+        try {
+            json.put("id", "2");
+            JSONObject data = new JSONObject();
+            data.put("body", "the_content_for_display");
+            data.put("url", "url_of_the_game_or_anything_else");
+            json.put("data", data);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+        notification.setContent(json.toString());
+        NIMClient.getService(MsgService.class).sendCustomNotification(notification).setCallback(new RequestCallbackWrapper<Void>() {
+            @Override
+            public void onResult(int code, Void result, Throwable exception) {
+                if (code == 200) {
+                    Toast.makeText(SendMessageActivity.this, "消息发送成功", Toast.LENGTH_SHORT).show();
+                } else {
+                    Toast.makeText(SendMessageActivity.this, "消息发送失败", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+    }
+
+    private Map<String, Object> getPushPayload(boolean clickActionEnable, boolean customDataEnable) {
+        if (!clickActionEnable && !customDataEnable) {
+            return null;
+        }
+        PushPayloadBuilder builder = new PushPayloadBuilder();
+        if (clickActionEnable) {
+            NotifyClickAction clickAction = new NotifyClickAction.Builder()
+                    .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
+                    .setClickActivity(NotificationClickActivity.class)
+                    .setIntentDataScheme("intent")
+                    .setIntentDataHost("com.huawei.codelabpush")
+                    .setIntentDataPath("/deeplink")
+                    .build();
+            builder.setClickAction(clickAction);
+        }
+        if (customDataEnable) {
+            builder.addCustomData(SESSION, etToAccid.getText().toString());
+        }
+        return builder.setPushTitle("推送测试").generatePayload();
     }
 }

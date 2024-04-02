@@ -1,5 +1,7 @@
 package com.example.nimlogin;
 
+import static com.example.nimlogin.NotificationClickActivity.SESSION;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -21,6 +23,7 @@ import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.pushlib.BuildConfig;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.StatusCode;
@@ -53,17 +56,24 @@ public class MainActivity extends AppCompatActivity {
         NIMClient.toggleNotification(false);
         buildNormalNIMMessageChannel();
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        Intent intent = getIntent();
+        intent.getExtras();
+        String sessionID = intent.getStringExtra(SESSION);
+        if (!TextUtils.isEmpty(sessionID)){
+            Toast.makeText(this, SESSION+":"+sessionID, Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
     @TargetApi(Build.VERSION_CODES.O)
     private void buildNormalNIMMessageChannel() {
         NotificationManager manager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
-
-        NotificationChannel channel = new NotificationChannel("1", "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(BuildConfig.oppoChannelId, "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription("NIM_CHANNEL_DESC");
-        if (true) {
-            // 震动
-            channel.enableVibration(true);
-        }
-
         manager.createNotificationChannel(channel);
     }
 

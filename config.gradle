@@ -1,18 +1,12 @@
-ext{
+ext {
 
     imVersion = "9.14.0"
     //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
-    APP_KEY = "4727023efa991d31d61b3b32e819bd5b"
+    APP_KEY = "9ede4e6f9bbea527cbb67e8e99f5a2bb"
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
-    APPLICATION_ID = "com.netease.nim.demo"
+    APPLICATION_ID = "com.storemonitor.app"
     GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
-    /**
-     * FCM推送相关配置:
-     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
-     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
-     */
-    //云信控制台上FCM推送证书的名
-    fcmCertificateName = "myfcmtest"
+
     /**
      * 小米推送相关配置信息
      */
@@ -62,6 +56,8 @@ ext{
     oppoAppSercet = "0be0ee1ef3fb431587efd2a0f0a30a43"
     // 传入云信控制台上配置的oppo推送证书名
     oppoCertificateName = "certificat_oppo"
+    //oppo控制台申请的通知通道id，也可以在代码中生成payload的时候通过PushPayloadBuilder#addChannelId自行添加
+    oppoChannelId = "1"
     /**
      * 魅族推送相关配置
      */
@@ -69,6 +65,15 @@ ext{
     mzAppKey = "6068c5a8323542deaf83ad5b6d3ca9e2"
     // 传入云信控制台上配置的魅族推送证书名
     mzCertificateName = "meizuTest"
+
+    /**
+     * FCM推送相关配置:
+     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
+     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
+     */
+    //云信控制台上FCM推送证书的名
+    fcmCertificateName = "myfcmtest"
+
 
 }
 //添加标志位，保证只执行一次
@@ -79,37 +84,37 @@ gradle.afterProject {
 
     gradle.getRootProject().getAllprojects().forEach {
         println("afterProject:" + it.name)
-        if (it.plugins.hasPlugin("com.android.application")&&count==0){
+        if (it.plugins.hasPlugin("com.android.application") && count == 0) {
             count = 1
-            it.dependencies{
+            it.dependencies {
                 implementation project(path: ':pushLib')
             }
             //根据主应用下的华为的agconnect-services.json文件配置决定是否要添加华为的plugin
             def huaweiJsonPath = "${it.name}/agconnect-services.json"
-            println("huaweiJsonPath:"+huaweiJsonPath)
+            println("huaweiJsonPath:" + huaweiJsonPath)
             def huaweiJsonConfigFile = file(huaweiJsonPath)
-            if (huaweiJsonConfigFile.exists()){
-                it.plugins.apply("com.huawei.agconnect")
+            if (huaweiJsonConfigFile.exists()) {
+//                it.plugins.apply("com.huawei.agconnect")
                 println("add huawei plugin")
-            }else {
+            } else {
                 println("huawei json config file is not exists")
             }
 
             //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
             def googleJsonConfigFile = file("${it.name}/google-services.json")
-            if (googleJsonConfigFile.exists()){
-                it.plugins.apply("com.google.gms.google-services")
+            if (googleJsonConfigFile.exists()) {
+//                it.plugins.apply("com.google.gms.google-services")
                 println("add google plugin")
-            }else {
+            } else {
                 println("google json config file is not exists")
             }
 
             //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
             def honerJsonConfigFile = file("${it.name}/mcs-services.json")
-            if (honerJsonConfigFile.exists()){
-                it.plugins.apply("com.hihonor.mcs.asplugin")
+            if (honerJsonConfigFile.exists()) {
+//                it.plugins.apply("com.hihonor.mcs.asplugin")
                 println("add honer plugin")
-            }else {
+            } else {
                 println("honer json config file is not exists")
             }
         }

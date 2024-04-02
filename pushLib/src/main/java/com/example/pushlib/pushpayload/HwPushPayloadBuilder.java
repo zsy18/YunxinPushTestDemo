@@ -31,19 +31,11 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
     private String body;
     private String clickAction;
 
-    private Context context;
-
-    public HwPushPayloadBuilder(Context context) {
-        this.context = context;
+    public HwPushPayloadBuilder() {
     }
 
     @Override
-    public IPushPayloadBuilder setPushTittle(String tittle) {
-        return null;
-    }
-
-    @Override
-    public IPushPayloadBuilder setPushContent(String pushContent) {
+    public IPushPayloadBuilder setPushTitle(String title) {
         return null;
     }
 
@@ -54,7 +46,11 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
 
     @Override
     public IPushPayloadBuilder setClickAction(NotifyClickAction clickAction) {
+        return null;
+    }
 
+    @Override
+    public IPushPayloadBuilder addChannelId(PushPayloadBuilderType builderType, String channelId) {
         return null;
     }
 

@@ -59,12 +59,15 @@
                 android:layout_height="wrap_content"/>
         </LinearLayout>
 
-
-
     </LinearLayout>
     <Button
         android:id="@+id/btn_send_message"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="发送消息"/>
+    <Button
+        android:id="@+id/btn_send_custom_notify"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="发送通知"/>
 </LinearLayout>
