@@ -16,11 +16,8 @@ android {
                                 vivoAppId:rootProject.ext.vivoAppId]
 
         buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
+        buildConfigField "String","fcmChannelId","\"${rootProject.ext.fcmChannelId}\""
 
-        buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
-
-
-        buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
 
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
         buildConfigField "String","xmAppKey","\"${rootProject.ext.xmAppKey}\""
@@ -34,8 +31,10 @@ android {
 
 
         buildConfigField "String","honorCertificateName","\"${rootProject.ext.honorCertificateName}\""
+        buildConfigField "String","honorChannelId","\"${rootProject.ext.honorChannelId}\""
 
         buildConfigField "String","vivoCertificateName","\"${rootProject.ext.vivoCertificateName}\""
+        buildConfigField "String","vivoChannelId","\"${rootProject.ext.vivoChannelId}\""
 
         buildConfigField "String","oppoAppId","\"${rootProject.ext.oppoAppId}\""
         buildConfigField "String","oppoAppKey","\"${rootProject.ext.oppoAppKey}\""
@@ -47,6 +46,8 @@ android {
         buildConfigField "String","mzAppId","\"${rootProject.ext.mzAppId}\""
         buildConfigField "String","mzAppKey","\"${rootProject.ext.mzAppKey}\""
         buildConfigField "String","mzCertificateName","\"${rootProject.ext.mzCertificateName}\""
+        buildConfigField "String","mzChannelId","\"${rootProject.ext.mzChannelId}\""
+
 
 
     }

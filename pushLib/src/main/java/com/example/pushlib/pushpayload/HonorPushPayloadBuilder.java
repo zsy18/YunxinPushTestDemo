@@ -1,45 +1,18 @@
 package com.example.pushlib.pushpayload;
 
-import android.annotation.SuppressLint;
-import android.app.Activity;
-import android.content.ComponentName;
-import android.content.Context;
-import android.content.Intent;
-import android.content.IntentFilter;
-import android.content.pm.ActivityInfo;
-import android.content.pm.PackageManager;
-import android.content.pm.ResolveInfo;
-import android.content.pm.ServiceInfo;
-import android.content.res.XmlResourceParser;
-import android.net.Uri;
-import android.os.Bundle;
 import android.text.TextUtils;
-import android.util.Log;
 
 import com.example.pushlib.BuildConfig;
 
 import org.json.JSONObject;
-import org.xmlpull.v1.XmlPullParser;
-import org.xmlpull.v1.XmlPullParserException;
-import org.xmlpull.v1.XmlPullParserFactory;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
-public class HwPushPayloadBuilder implements IPushPayloadBuilder {
-
+public class HonorPushPayloadBuilder implements IPushPayloadBuilder{
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
     private String mChannelId = BuildConfig.hwChannelId;
-
-
-
-    public HwPushPayloadBuilder() {
-    }
-
     @Override
     public IPushPayloadBuilder setPushTitle(String title) {
         return null;
@@ -63,12 +36,10 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
     @Override
     public IPushPayloadBuilder addChannelId(PushPayloadBuilderType builderType, String channelId) {
         mChannelId = channelId;
-
         return null;
     }
 
     /**
-     * hw官网内容
      * 消息点击行为类型，取值如下：
      * 1：打开应用自定义页面
      * 2：点击后打开特定URL
@@ -78,6 +49,7 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
     @Override
     public Map<String, Object> generatePayload() {
         Map<String, Object> payloadMap = new HashMap<>();
+        Map<String, Object> notificationMap = new HashMap<>();
         if (mClickAction != null) {
             Map<String, Object> clickActionMap = new HashMap<>();
             NotifyEffectMode effectMode = mClickAction.getNotifyEffect();
@@ -96,23 +68,18 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
                     clickActionMap.put("url",mClickAction.getWebUrl());
                     break;
             }
-            payloadMap.put("click_action",clickActionMap);
+            notificationMap.put("clickAction",clickActionMap);
+
         }
-        Map<String, Object> androidConfigMap = new HashMap<>();
+        notificationMap.put("importance","NORMAL");
+        payloadMap.put("notification",notificationMap);
 
         if (mCustomDataMap != null && mCustomDataMap.size() > 0) {
             JSONObject json = new JSONObject(mCustomDataMap);
-            androidConfigMap.put("data", json.toString());
+            payloadMap.put("data", json.toString());
         }
-        androidConfigMap.put("category","IM");
         //测试消息，用于测试接入，上线需要注释。
-        androidConfigMap.put("target_user_type",1);
-        if (androidConfigMap.size()>0){
-            payloadMap.put("androidConfig",androidConfigMap);
-        }
-        if (!TextUtils.isEmpty(mChannelId)){
-            payloadMap.put("channel_id",mChannelId);
-        }
+        payloadMap.put("target_user_type",1);
         return payloadMap;
     }
 }

@@ -40,6 +40,8 @@ ext {
     // 传入荣耀推送证书名，荣耀推送的 appId请在 AndroidManifest.xml 文件中配置
     honorAppId = "100100577"
     honorCertificateName = "honorTest"
+    honorChannelId = ""
+
     /**
      * vivo推送相关配置
      */
@@ -49,6 +51,8 @@ ext {
     vivoAppKey = "a51da7ed008d22de3ad7937be1e707f7"
     //你的 vivo 推送的 app id
     vivoAppId = "103397457"
+    vivoChannelId = ""
+
 
     /**
      * OPPO推送相关配置
@@ -68,6 +72,8 @@ ext {
     mzAppKey = "6068c5a8323542deaf83ad5b6d3ca9e2"
     // 传入云信控制台上配置的魅族推送证书名
     mzCertificateName = "meizuTest"
+    mzChannelId = ""
+
 
     /**
      * FCM推送相关配置:
@@ -76,6 +82,7 @@ ext {
      */
     //云信控制台上FCM推送证书的名
     fcmCertificateName = "myfcmtest"
+    fcmChannelId = ""
 
 
 }
