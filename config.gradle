@@ -16,6 +16,7 @@ ext {
     xmAppKey = "5222005592541"
     //云信控制台上小米推送对应的证书名
     xmCertificateName = "xiaomi_test1"
+    xmChannelId = ""
 
     /**
      * 华为推送相关配置：

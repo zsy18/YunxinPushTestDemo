@@ -25,6 +25,9 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
         if (!TextUtils.isEmpty(BuildConfig.oppoCertificateName)) {
             mBuilderMap.put(PushPayloadBuilderType.OPPO, new OppoPushPayloadBuilder());
         }
+        if (!TextUtils.isEmpty(BuildConfig.xmCertificateName)){
+            mBuilderMap.put(PushPayloadBuilderType.XIAOMI, new XmPushPayloadBuilder());
+        }
     }
 
     /**

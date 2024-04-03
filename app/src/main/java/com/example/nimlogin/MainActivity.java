@@ -41,6 +41,10 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvLoginStatus,tvToken;
     private Button btnLogout;
     private static final String TEST_ACCID = "改为发送端的accid";
+    String[] channelIds = new String[]{
+            BuildConfig.oppoChannelId,
+            BuildConfig.hwChannelId
+    };
     private boolean hasUpdate = false;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,7 +56,12 @@ public class MainActivity extends AppCompatActivity {
         checkPermission();
         //关闭消息提醒，防止干扰推送测试。
         NIMClient.toggleNotification(false);
-        buildNormalNIMMessageChannel();
+        for (String channelId : channelIds) {
+            if (!TextUtils.isEmpty(channelId)){
+                buildMessageChannel(channelId);
+            }
+        }
+
     }
 
     @Override
@@ -68,9 +77,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @TargetApi(Build.VERSION_CODES.O)
-    private void buildNormalNIMMessageChannel() {
+    private void buildMessageChannel(String channelId) {
         NotificationManager manager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
-        NotificationChannel channel = new NotificationChannel(BuildConfig.oppoChannelId, "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
+        NotificationChannel channel = new NotificationChannel(channelId, "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
         channel.setDescription("NIM_CHANNEL_DESC");
         manager.createNotificationChannel(channel);
     }

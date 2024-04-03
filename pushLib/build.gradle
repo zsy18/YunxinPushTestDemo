@@ -25,6 +25,8 @@ android {
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
         buildConfigField "String","xmAppKey","\"${rootProject.ext.xmAppKey}\""
         buildConfigField "String","xmCertificateName","\"${rootProject.ext.xmCertificateName}\""
+        buildConfigField "String","xmChannelId","\"${rootProject.ext.xmChannelId}\""
+
 
         buildConfigField "String","hwAppId","\"${rootProject.ext.hwAppId}\""
         buildConfigField "String","hwCertificateName","\"${rootProject.ext.hwCertificateName}\""
