@@ -3,22 +3,25 @@ package com.example.pushlib.pushpayload;
 import android.app.Activity;
 import android.content.Intent;
 import android.net.Uri;
+import android.text.TextUtils;
 
 import java.util.List;
 import java.util.Map;
 
 public class NotifyClickAction {
-    private NotifyClickAction(){
+    private NotifyClickAction() {
 
     }
+
     private NotifyEffectMode notifyEffect;
     private Class<? extends Activity> clickActivity;
-    private String intentAction = "android.intent.action.VIEW";
+    private String intentAction = Intent.ACTION_VIEW;
     private List<String> intentCategoryList;
     private String intentDataScheme;
     private String intentDataHost;
+    private String intentDataPort;
     private String intentDataPath;
-    private String intentUrl;
+    private String webUrl;
 
     public NotifyEffectMode getNotifyEffect() {
         return notifyEffect;
@@ -48,28 +51,28 @@ public class NotifyClickAction {
         return intentDataPath;
     }
 
-    public String getIntentUrl() {
-        return intentUrl;
+    public String getWebUrl() {
+        return webUrl;
     }
 
     protected String getIntentFilterString() {
         return getIntentFilterString(null);
 
     }
+
     public String getIntentFilterString(Map<String, String> customData) {
-        String intentFilterString;
+        String intentFilterString = "";
         Intent intent = new Intent(intentAction);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
         if (intentCategoryList != null && intentCategoryList.size() > 0) {
             for (String s : intentCategoryList) {
                 intent.addCategory(s);
             }
         }
-        String uri = new StringBuilder().append(intentDataScheme)
-                .append("://")
-                .append(intentDataHost)
-                .append(intentDataPath)
-                .append("?").toString();
-        intent.setData(Uri.parse(uri));
+        Uri intentSchemeUri = getIntentSchemeUri();
+        if (intentSchemeUri != null) {
+            intent.setData(intentSchemeUri);
+        }
         if (customData != null && customData.size() > 0) {
             for (String s : customData.keySet()) {
                 intent.putExtra(s, customData.get(s));
@@ -77,6 +80,30 @@ public class NotifyClickAction {
         }
         intentFilterString = intent.toUri(Intent.URI_INTENT_SCHEME);
         return intentFilterString;
+    }
+
+    public Uri getIntentSchemeUri() {
+        if (!TextUtils.isEmpty(intentDataScheme)) {
+            StringBuilder uriBuilder = new StringBuilder();
+            uriBuilder.append(intentDataScheme);
+            if (!TextUtils.isEmpty(intentDataHost)) {
+                uriBuilder.append("://").append(intentDataHost);
+                if (!TextUtils.isEmpty(intentDataPort)) {
+                    uriBuilder.append(":").append(intentDataPort);
+                }
+                if (!TextUtils.isEmpty(intentDataPath)) {
+                    uriBuilder.append(intentDataPath);
+                }
+            }
+            Uri uri = Uri.parse(uriBuilder.toString());
+            return uri;
+        } else {
+            return null;
+        }
+    }
+
+    public String getIntentDataPort() {
+        return intentDataPort;
     }
 
     public static class Builder {
@@ -158,6 +185,17 @@ public class NotifyClickAction {
         }
 
         /**
+         * 设置需要打开的activity的intent-filter标签的data中的Port字段
+         *
+         * @param intentDataPort
+         * @return
+         */
+        public Builder setIntentDataPort(String intentDataPort) {
+            notifyClickAction.intentDataPort = intentDataPort;
+            return this;
+        }
+
+        /**
          * 设置需要打开的activity的intent-filter标签的data中的Path字段
          *
          * @param intentDataPath
@@ -174,8 +212,8 @@ public class NotifyClickAction {
          * @param url 需要打开的url地址
          * @return
          */
-        public Builder setIntentUrl(String url) {
-            notifyClickAction.intentUrl = url;
+        public Builder setWebUrl(String url) {
+            notifyClickAction.webUrl = url;
             return this;
         }
 

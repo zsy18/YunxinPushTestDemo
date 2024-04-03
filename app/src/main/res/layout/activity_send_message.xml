@@ -60,6 +60,30 @@
         </LinearLayout>
 
     </LinearLayout>
+    <RadioGroup
+        android:id="@+id/rg_click_notification"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:checkedButton="@+id/rb_main"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/rb_main"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="打开主页面"/>
+        <RadioButton
+            android:id="@+id/rb_action"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通过action配置打开自定义页面"/>
+        <RadioButton
+            android:id="@+id/rb_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通过data配置打开自定义页面"/>
+    </RadioGroup>
     <Button
         android:id="@+id/btn_send_message"
         android:layout_width="wrap_content"

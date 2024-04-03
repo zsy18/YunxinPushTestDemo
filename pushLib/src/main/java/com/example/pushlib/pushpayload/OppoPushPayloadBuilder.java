@@ -1,5 +1,6 @@
 package com.example.pushlib.pushpayload;
 
+import android.content.Intent;
 import android.text.TextUtils;
 
 import com.example.pushlib.BuildConfig;
@@ -65,15 +66,19 @@ public class OppoPushPayloadBuilder implements IPushPayloadBuilder {
                         //如果配置了跳转的activity优先使用 vivo 跳转指定应用内页（全路径类名）的方式
                         payloadMap.put("click_action_type", 4);
                         payloadMap.put("click_action_activity", mClickAction.getClickActivity().getName());
-                    } else {
-                        //否则，使用vivo跳转Intent scheme URL的方式
+                    } else if (!Intent.ACTION_VIEW.equals(mClickAction.getIntentAction())){
+                       //如果配置了自定义的action，使用action标签的方式
+                        payloadMap.put("click_action_type", 1);
+                        payloadMap.put("click_action_activity", mClickAction.getIntentAction());
+                    }else if (mClickAction.getIntentSchemeUri()!=null){
+                        //如果配置了data数据，使用vivo跳转Intent scheme URL的方式
                         payloadMap.put("click_action_type", 5);
-                        payloadMap.put("click_action_url", mClickAction.getIntentFilterString());
+                        payloadMap.put("click_action_url", mClickAction.getIntentSchemeUri().toString());
                     }
                     break;
                 case EFFECT_MODE_WEB:
                     payloadMap.put("click_action_type", 2);
-                    payloadMap.put("click_action_url", mClickAction.getIntentUrl());
+                    payloadMap.put("click_action_url", mClickAction.getWebUrl());
                     break;
             }
         }
@@ -85,8 +90,6 @@ public class OppoPushPayloadBuilder implements IPushPayloadBuilder {
         if (!TextUtils.isEmpty(mChannelId)){
             payloadMap.put("channel_id",mChannelId);
         }
-        payloadMap.put("title","fdsfd");
-        payloadMap.put("content","fsgfdgfd");
         return payloadMap;
     }
 }

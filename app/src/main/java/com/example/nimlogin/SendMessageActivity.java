@@ -1,6 +1,6 @@
 package com.example.nimlogin;
 
-import static com.example.nimlogin.NotificationClickActivity.SESSION;
+import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
@@ -9,13 +9,12 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.RadioGroup;
 import android.widget.Toast;
 
-import com.example.pushlib.BuildConfig;
 import com.example.pushlib.pushpayload.NotifyClickAction;
 import com.example.pushlib.pushpayload.NotifyEffectMode;
 import com.example.pushlib.pushpayload.PushPayloadBuilder;
-import com.example.pushlib.pushpayload.PushPayloadBuilderType;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.RequestCallbackWrapper;
 import com.netease.nimlib.sdk.friend.FriendService;
@@ -37,6 +36,8 @@ public class SendMessageActivity extends AppCompatActivity {
     private EditText etToAccid;
     private SwitchCompat swClickNotify, swCustomData;
     private Button btnSendMessage, btnSendCustomNotify;
+    private RadioGroup radioGroup;
+    private int selectIndex = 0;
     private int sendCount = 0;
 
     @Override
@@ -53,6 +54,23 @@ public class SendMessageActivity extends AppCompatActivity {
                 sendMessage();
             }
         });
+        radioGroup = findViewById(R.id.rg_click_notification);
+        radioGroup.setOnCheckedChangeListener(new RadioGroup.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(RadioGroup group, int checkedId) {
+                switch (checkedId) {
+                    case R.id.rb_main:
+                        selectIndex = 0;
+                        break;
+                    case R.id.rb_action:
+                        selectIndex = 1;
+                        break;
+                    case R.id.rb_data:
+                        selectIndex = 2;
+                        break;
+                }
+            }
+        });
         btnSendCustomNotify = findViewById(R.id.btn_send_custom_notify);
         btnSendCustomNotify.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -60,21 +78,22 @@ public class SendMessageActivity extends AppCompatActivity {
                 sendCustomNotify();
             }
         });
+
     }
 
     private void sendMessage() {
         String toAccid = etToAccid.getText().toString();
-        String content = "测试消息："+sendCount++;
-        IMMessage message = MessageBuilder.createTextMessage(toAccid, SessionTypeEnum.P2P,content);
-        message.setPushPayload(getPushPayload(swClickNotify.isChecked(),swCustomData.isChecked()));
+        String content = "测试消息：" + sendCount++;
+        IMMessage message = MessageBuilder.createTextMessage(toAccid, SessionTypeEnum.P2P, content);
+        message.setPushPayload(getPushPayload(swClickNotify.isChecked(), swCustomData.isChecked()));
         //如需自定义推送内容，则需要直接通过IMMessage#setPushContent设置，不配置默认使用消息内容。
-        message.setPushContent("测试测试测试");
-        NIMClient.getService(MsgService.class).sendMessage(message,false).setCallback(new RequestCallbackWrapper<Void>() {
+//        message.setPushContent("测试测试测试");
+        NIMClient.getService(MsgService.class).sendMessage(message, false).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
-                if (code == 200){
+                if (code == 200) {
                     Toast.makeText(SendMessageActivity.this, "消息发送成功", Toast.LENGTH_SHORT).show();
-                }else {
+                } else {
                     Toast.makeText(SendMessageActivity.this, "消息发送失败", Toast.LENGTH_SHORT).show();
                     NIMClient.getService(FriendService.class).addFriend(new AddFriendData(toAccid, VerifyType.DIRECT_ADD));
                 }
@@ -91,7 +110,7 @@ public class SendMessageActivity extends AppCompatActivity {
         notification.setSendToOnlineUserOnly(false);
         notification.setSessionId(toAccid);
         notification.setSessionType(SessionTypeEnum.P2P);
-        CustomNotificationConfig config= new CustomNotificationConfig();
+        CustomNotificationConfig config = new CustomNotificationConfig();
 
         // 需要推送
         config.enablePush = true;
@@ -131,20 +150,42 @@ public class SendMessageActivity extends AppCompatActivity {
         if (!clickActionEnable && !customDataEnable) {
             return null;
         }
+
         PushPayloadBuilder builder = new PushPayloadBuilder();
+        NotifyClickAction clickAction;
+
         if (clickActionEnable) {
-            NotifyClickAction clickAction = new NotifyClickAction.Builder()
-                    .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
-                    .setClickActivity(NotificationClickActivity.class)
-                    .setIntentDataScheme("intent")
-                    .setIntentDataHost("com.huawei.codelabpush")
-                    .setIntentDataPath("/deeplink")
-                    .build();
-            builder.setClickAction(clickAction);
+            switch (selectIndex) {
+                case 0:
+                    clickAction = new NotifyClickAction.Builder()
+                            .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_APP)
+                            .build();
+                    builder.setClickAction(clickAction);
+
+                    break;
+                case 1:
+                    clickAction = new NotifyClickAction.Builder()
+                            .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
+                            .setIntentAction(BuildConfig.APPLICATION_ID + ".openP2PView")
+                            .build();
+                    builder.setClickAction(clickAction);
+
+                    break;
+                case 2:
+                    clickAction = new NotifyClickAction.Builder()
+                            .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
+                            .setIntentDataScheme("im")
+                            .setIntentDataHost(BuildConfig.APPLICATION_ID)
+                            .setIntentDataPath("/p2pPage")
+                            .setIntentDataPort("8080")
+                            .build();
+                    builder.setClickAction(clickAction);
+                    break;
+            }
         }
         if (customDataEnable) {
             builder.addCustomData(SESSION, etToAccid.getText().toString());
         }
-        return builder.setPushTitle("推送测试").generatePayload();
+        return builder.generatePayload();
     }
 }

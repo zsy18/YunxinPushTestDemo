@@ -1,5 +1,7 @@
 package com.example.nimlogin;
 
+import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
+
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -7,14 +9,12 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.widget.Toast;
 
-public class NotificationClickActivity extends AppCompatActivity {
-    public static final String SESSION = "ceshi";
+public class NotificationActionClickActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_notifycation_click);
-
+        setContentView(R.layout.activity_notification_action_click);
     }
     @Override
     protected void onStart() {

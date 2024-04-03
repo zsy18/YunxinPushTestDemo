@@ -14,7 +14,12 @@ android {
                                 honorAppId:rootProject.ext.honorAppId,
                                 vivoAppKey:rootProject.ext.vivoAppKey,
                                 vivoAppId:rootProject.ext.vivoAppId]
-        println("app android************")
+
+        buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
+
+        buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
+
+
         buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
 
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
@@ -23,6 +28,8 @@ android {
 
         buildConfigField "String","hwAppId","\"${rootProject.ext.hwAppId}\""
         buildConfigField "String","hwCertificateName","\"${rootProject.ext.hwCertificateName}\""
+        buildConfigField "String","hwChannelId","\"${rootProject.ext.hwChannelId}\""
+
 
         buildConfigField "String","honorCertificateName","\"${rootProject.ext.honorCertificateName}\""
 

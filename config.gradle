@@ -2,9 +2,9 @@ ext {
 
     imVersion = "9.14.0"
     //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
-    APP_KEY = "9ede4e6f9bbea527cbb67e8e99f5a2bb"
+    APP_KEY = "4727023efa991d31d61b3b32e819bd5b"
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
-    APPLICATION_ID = "com.storemonitor.app"
+    APPLICATION_ID = "com.netease.nim.demo"
     GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
 
     /**
@@ -30,6 +30,8 @@ ext {
     hwAppId = "104770765"
     // 传入云信控制台上华为推送证书名
     hwCertificateName = "huaweiceshi"
+    hwChannelId = ""
+
 
     /**
      * 荣耀推送相关配置
@@ -94,7 +96,7 @@ gradle.afterProject {
             println("huaweiJsonPath:" + huaweiJsonPath)
             def huaweiJsonConfigFile = file(huaweiJsonPath)
             if (huaweiJsonConfigFile.exists()) {
-//                it.plugins.apply("com.huawei.agconnect")
+                it.plugins.apply("com.huawei.agconnect")
                 println("add huawei plugin")
             } else {
                 println("huawei json config file is not exists")
@@ -103,7 +105,7 @@ gradle.afterProject {
             //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
             def googleJsonConfigFile = file("${it.name}/google-services.json")
             if (googleJsonConfigFile.exists()) {
-//                it.plugins.apply("com.google.gms.google-services")
+                it.plugins.apply("com.google.gms.google-services")
                 println("add google plugin")
             } else {
                 println("google json config file is not exists")
@@ -112,7 +114,7 @@ gradle.afterProject {
             //根据主应用下的google的google-services.json文件配置决定是否要添加华为的plugin
             def honerJsonConfigFile = file("${it.name}/mcs-services.json")
             if (honerJsonConfigFile.exists()) {
-//                it.plugins.apply("com.hihonor.mcs.asplugin")
+                it.plugins.apply("com.hihonor.mcs.asplugin")
                 println("add honer plugin")
             } else {
                 println("honer json config file is not exists")

@@ -20,7 +20,7 @@
 
     <uses-permission android:name="${applicationId}.permission.RECEIVE_MSG" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" /> <!-- 以下两处 {您的包名} 改为开发者自己的 App 的包名 -->
- <!-- OPPO推送配置权限 -->
+    <!-- OPPO推送配置权限 -->
     <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE" />
     <uses-permission android:name="com.heytap.mcs.permission.RECIEVE_MCS_MESSAGE" /> <!-- 兼容 Flyme5 以下版本，魅族内部接入 PushSDK 必填，不然无法收到消息 -->
     <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE" />
@@ -50,15 +50,29 @@
         android:theme="@style/Theme.NIMLogin"
         tools:targetApi="31">
         <activity
-            android:name=".NotificationClickActivity"
-            android:exported="true" >
+            android:name=".NotificationActionClickActivity"
+            android:exported="true"
+            android:label="NotificationActionClickActivity">
             <intent-filter>
-                <action android:name="android.intent.action.VIEW"/>
-                <category android:name="android.intent.category.DEFAULT"/>
+                <action android:name="${applicationId}.openP2PView" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+
+        </activity>
+        <activity
+            android:name=".NotificationDataClickActivity"
+            android:exported="true"
+            android:label="DataClickActivity">
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+
                 <data
-                    android:host="com.huawei.codelabpush"
-                    android:path="/deeplink"
-                    android:scheme="intent"/>
+                    android:host="${applicationId}"
+                    android:path="/p2pPage"
+                    android:port="8080"
+                    android:scheme="im" />
             </intent-filter>
         </activity>
         <activity
@@ -72,6 +86,7 @@
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity> <!-- 云信后台服务，请使用独立进程。 -->
@@ -105,9 +120,7 @@
         <provider
             android:name="com.netease.nimlib.ipc.cp.provider.PreferenceContentProvider"
             android:authorities="${applicationId}.ipc.provider.preference"
-            android:exported="false" /> <!-- fcm -->
-
-
+            android:exported="false" />
     </application>
 
 </manifest>

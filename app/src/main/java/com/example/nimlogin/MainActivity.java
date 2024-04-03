@@ -1,6 +1,6 @@
 package com.example.nimlogin;
 
-import static com.example.nimlogin.NotificationClickActivity.SESSION;
+import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
@@ -12,8 +12,6 @@ import android.app.NotificationManager;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.media.AudioAttributes;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
