@@ -1,15 +1,19 @@
-package com.example.pushlib.pushpayload;
+package com.example.pushlib.pushpayload.builder;
 
 import android.text.TextUtils;
 
 import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.IPushPayloadBuilder;
+import com.example.pushlib.pushpayload.NotifyClickAction;
+import com.example.pushlib.pushpayload.NotifyEffectMode;
+import com.example.pushlib.pushpayload.PushPayloadBuilderType;
 
 import org.json.JSONObject;
 
 import java.util.HashMap;
 import java.util.Map;
 
-public class HonorPushPayloadBuilder implements IPushPayloadBuilder{
+public class HonorPushPayloadBuilder implements IPushPayloadBuilder {
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
 

@@ -4,6 +4,13 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.builder.FcmPushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.FcmV1PushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.HonorPushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.HwPushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.OppoPushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.VivoPushPayloadBuilder;
+import com.example.pushlib.pushpayload.builder.XmPushPayloadBuilder;
 
 import org.json.JSONObject;
 
@@ -18,21 +25,21 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
 
     public PushPayloadBuilder() {
         //根据config.gradle文件中是否配置了云信平台的推送证书来决定是否生成对应的payload字段
-//        if (!TextUtils.isEmpty(BuildConfig.hwCertificateName)) {
-//            mBuilderMap.put(PushPayloadBuilderType.HUAWEI, new HwPushPayloadBuilder());
-//        }
-//        if (!TextUtils.isEmpty(BuildConfig.oppoCertificateName)) {
-//            mBuilderMap.put(PushPayloadBuilderType.OPPO, new OppoPushPayloadBuilder());
-//        }
-//        if (!TextUtils.isEmpty(BuildConfig.xmCertificateName)){
-//            mBuilderMap.put(PushPayloadBuilderType.XIAOMI, new XmPushPayloadBuilder());
-//        }
-//        if (!TextUtils.isEmpty(BuildConfig.honorCertificateName)){
-//            mBuilderMap.put(PushPayloadBuilderType.HONER, new HonorPushPayloadBuilder());
-//        }
-//        if (!TextUtils.isEmpty(BuildConfig.vivoCertificateName)){
-//            mBuilderMap.put(PushPayloadBuilderType.VIVO, new VivoPushPayloadBuilder());
-//        }
+        if (!TextUtils.isEmpty(BuildConfig.hwCertificateName)) {
+            mBuilderMap.put(PushPayloadBuilderType.HUAWEI, new HwPushPayloadBuilder());
+        }
+        if (!TextUtils.isEmpty(BuildConfig.oppoCertificateName)) {
+            mBuilderMap.put(PushPayloadBuilderType.OPPO, new OppoPushPayloadBuilder());
+        }
+        if (!TextUtils.isEmpty(BuildConfig.xmCertificateName)){
+            mBuilderMap.put(PushPayloadBuilderType.XIAOMI, new XmPushPayloadBuilder());
+        }
+        if (!TextUtils.isEmpty(BuildConfig.honorCertificateName)){
+            mBuilderMap.put(PushPayloadBuilderType.HONER, new HonorPushPayloadBuilder());
+        }
+        if (!TextUtils.isEmpty(BuildConfig.vivoCertificateName)){
+            mBuilderMap.put(PushPayloadBuilderType.VIVO, new VivoPushPayloadBuilder());
+        }
         if (!TextUtils.isEmpty(BuildConfig.fcmCertificateName)){
             if (BuildConfig.fcmHttpV1Enable){
                 mBuilderMap.put(PushPayloadBuilderType.FCMV1, new FcmV1PushPayloadBuilder());

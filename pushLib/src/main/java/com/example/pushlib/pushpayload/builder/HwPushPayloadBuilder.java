@@ -1,4 +1,4 @@
-package com.example.pushlib.pushpayload;
+package com.example.pushlib.pushpayload.builder;
 
 import android.annotation.SuppressLint;
 import android.app.Activity;
@@ -17,6 +17,10 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.IPushPayloadBuilder;
+import com.example.pushlib.pushpayload.NotifyClickAction;
+import com.example.pushlib.pushpayload.NotifyEffectMode;
+import com.example.pushlib.pushpayload.PushPayloadBuilderType;
 
 import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
