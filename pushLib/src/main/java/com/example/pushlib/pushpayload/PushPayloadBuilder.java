@@ -106,6 +106,15 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        IPushPayloadBuilder payloadBuilder = mBuilderMap.get(builderType);
+        if (payloadBuilder != null) {
+            payloadBuilder.addCategory(builderType, channelId);
+        }
+        return this;
+    }
+
+    @Override
     public Map<String, Object> generatePayload() {
         for (PushPayloadBuilderType pushPayloadBuilderType : mBuilderMap.keySet()) {
             //获取各个厂商实际的payloadbuilder

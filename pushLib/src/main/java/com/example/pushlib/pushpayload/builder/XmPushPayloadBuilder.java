@@ -52,6 +52,11 @@ public class XmPushPayloadBuilder implements IPushPayloadBuilder {
         return null;
     }
 
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
     /**
      * 通过设置extra.notify_effect的值以得到不同的预定义点击行为。
      * “1″：通知栏点击后打开app的Launcher Activity。

@@ -19,7 +19,7 @@ public class VivoPushPayloadBuilder implements IPushPayloadBuilder {
 
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
-    private String mChannelId = BuildConfig.vivoChannelId;
+    private String mCategory = BuildConfig.vivoCategory;
     @Override
     public IPushPayloadBuilder setPushTitle(String title) {
         return null;
@@ -41,13 +41,12 @@ public class VivoPushPayloadBuilder implements IPushPayloadBuilder {
      */
     @Override
     public IPushPayloadBuilder enableTestPushMode(boolean enable) {
-        if (enable){
-//            payloadMap.put("pushMode",1);
-        }else {
-//            payloadMap.put("pushMode",0);
-
-        }
         //测试配置
+        if (enable){
+            payloadMap.put("pushMode",1);
+        }else {
+            payloadMap.put("pushMode",0);
+        }
         return null;
     }
 
@@ -59,7 +58,12 @@ public class VivoPushPayloadBuilder implements IPushPayloadBuilder {
 
     @Override
     public IPushPayloadBuilder addChannelId(PushPayloadBuilderType builderType, String channelId) {
-        mChannelId = channelId;
+        return null;
+    }
+
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String category) {
+        mCategory = category;
         return null;
     }
 
@@ -94,8 +98,7 @@ public class VivoPushPayloadBuilder implements IPushPayloadBuilder {
 //        }
 
         //默认使用IM类型的消息分类
-        payloadMap.put("classification",1);
-        payloadMap.put("category","IM");
+        payloadMap.put("category",mCategory);
 
         return payloadMap;    }
 }

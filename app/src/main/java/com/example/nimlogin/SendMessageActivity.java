@@ -206,8 +206,6 @@ public class SendMessageActivity extends AppCompatActivity {
         if (customDataEnable) {
             builder.addCustomData(SESSION, etToAccid.getText().toString());
         }
-        builder.enableTestPushMode(true);
-
         return builder.generatePayload();
     }
     public static boolean checkIntent(Context context, String intentUri) {

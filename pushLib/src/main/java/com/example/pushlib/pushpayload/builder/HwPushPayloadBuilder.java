@@ -39,6 +39,7 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
     private String mChannelId = BuildConfig.hwChannelId;
+    private String mCategory = BuildConfig.hwCategory;
 
 
 
@@ -82,6 +83,11 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
         return null;
     }
 
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
     /**
      * hw官网内容
      * 消息点击行为类型，取值如下：
@@ -118,7 +124,7 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
             JSONObject json = new JSONObject(mCustomDataMap);
             androidConfigMap.put("data", json.toString());
         }
-        androidConfigMap.put("category","IM");
+        androidConfigMap.put("category",mCategory);
         if (androidConfigMap.size()>0){
             payloadMap.put("androidConfig",androidConfigMap);
         }

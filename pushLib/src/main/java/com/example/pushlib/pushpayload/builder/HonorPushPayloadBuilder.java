@@ -17,6 +17,8 @@ public class HonorPushPayloadBuilder implements IPushPayloadBuilder {
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
 
+    private String mImportance = BuildConfig.honorImportance;
+
     private Map<String, Object> payloadMap = new HashMap<>();
 
     @Override
@@ -62,6 +64,21 @@ public class HonorPushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     /**
+     * 荣耀通过importance来实现的消息分类。
+     * @param builderType
+     * @param importance
+     * Android通知消息分类，决定用户设备消息通知行为，取值如下：
+     * LOW：资讯营销类消息
+     * NORMAL：服务与通讯类消息
+     * @return
+     */
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String importance) {
+        mImportance = importance;
+        return null;
+    }
+
+    /**
      * 消息点击行为类型，取值如下：
      * 1：打开应用自定义页面
      * 2：点击后打开特定URL
@@ -91,9 +108,8 @@ public class HonorPushPayloadBuilder implements IPushPayloadBuilder {
             notificationMap.put("clickAction",clickActionMap);
 
         }
-        notificationMap.put("importance","NORMAL");
+        notificationMap.put("importance",mImportance);
         payloadMap.put("notification",notificationMap);
-
         if (mCustomDataMap != null && mCustomDataMap.size() > 0) {
             JSONObject json = new JSONObject(mCustomDataMap);
             payloadMap.put("data", json.toString());

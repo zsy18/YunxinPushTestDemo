@@ -36,6 +36,11 @@ public class MzPushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
+    @Override
     public Map<String, Object> generatePayload() {
         return null;
     }

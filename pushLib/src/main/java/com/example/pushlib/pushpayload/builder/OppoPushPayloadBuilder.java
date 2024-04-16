@@ -50,6 +50,17 @@ public class OppoPushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     /**
+     * oppo推送暂不支持Category配置
+     * @param builderType
+     * @param channelId
+     * @return
+     */
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
+    /**
      * oppo官网内容
      * 点击通知栏后触发的动作类型。
      * 点击动作类型值的定义和含义如下：

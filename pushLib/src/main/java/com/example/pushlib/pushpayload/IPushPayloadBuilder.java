@@ -34,7 +34,21 @@ public interface IPushPayloadBuilder {
      */
     IPushPayloadBuilder setClickAction(NotifyClickAction clickAction);
 
+    /**
+     * 添加对应厂商推送通知栏对应的ChannelId，也可以在config.gradle配置
+     * @param builderType
+     * @param channelId
+     * @return
+     */
     IPushPayloadBuilder addChannelId(PushPayloadBuilderType builderType,String channelId);
+
+    /**
+     * 添加对应厂商推送的Category，也可以在config.gradle配置
+     * @param builderType
+     * @param category
+     * @return
+     */
+    IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType,String category);
     /**
      * 生成需要的payload map数据
      * @return

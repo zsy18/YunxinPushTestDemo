@@ -31,13 +31,14 @@ android {
         buildConfigField "String","hwAppId","\"${rootProject.ext.hwAppId}\""
         buildConfigField "String","hwCertificateName","\"${rootProject.ext.hwCertificateName}\""
         buildConfigField "String","hwChannelId","\"${rootProject.ext.hwChannelId}\""
+        buildConfigField "String","hwCategory","\"${rootProject.ext.hwCategory}\""
 
 
         buildConfigField "String","honorCertificateName","\"${rootProject.ext.honorCertificateName}\""
-        buildConfigField "String","honorChannelId","\"${rootProject.ext.honorChannelId}\""
+        buildConfigField "String","honorImportance","\"${rootProject.ext.honorImportance}\""
 
         buildConfigField "String","vivoCertificateName","\"${rootProject.ext.vivoCertificateName}\""
-        buildConfigField "String","vivoChannelId","\"${rootProject.ext.vivoChannelId}\""
+        buildConfigField "String","vivoCategory","\"${rootProject.ext.vivoCategory}\""
 
         buildConfigField "String","oppoAppId","\"${rootProject.ext.oppoAppId}\""
         buildConfigField "String","oppoAppKey","\"${rootProject.ext.oppoAppKey}\""

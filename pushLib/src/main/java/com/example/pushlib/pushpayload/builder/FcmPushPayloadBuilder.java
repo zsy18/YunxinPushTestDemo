@@ -56,6 +56,11 @@ public class FcmPushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
+    @Override
     public Map<String, Object> generatePayload() {
         if (mClickAction != null) {
             NotifyEffectMode effectMode = mClickAction.getNotifyEffect();

@@ -61,6 +61,17 @@ public class FcmV1PushPayloadBuilder implements IPushPayloadBuilder {
         return null;
     }
 
+    /**
+     * fcm暂时不支持该配置
+     * @param builderType
+     * @param channelId
+     * @return
+     */
+    @Override
+    public IPushPayloadBuilder addCategory(PushPayloadBuilderType builderType, String channelId) {
+        return null;
+    }
+
     @Override
     public Map<String, Object> generatePayload() {
         if (mClickAction != null) {
@@ -88,6 +99,7 @@ public class FcmV1PushPayloadBuilder implements IPushPayloadBuilder {
             mAndroidMap.put("notification", mNotificationMap);
         }
         mMessageMap.put("data", mCustomDataMap);
+        //使用数据消息，需要添加该配置，并且联系技术支持邮件开通
 //        mMessageMap.put("needNotification",false);
         mMessageMap.put("android", mAndroidMap);
         mPayloadMap.put("message", mMessageMap);

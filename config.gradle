@@ -8,15 +8,27 @@ ext {
     GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
 
     /**
-     * 小米推送相关配置信息
+     * FCM推送相关配置:
+     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
+     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
      */
-    //小米推送平台获取到的AppId
-    xmAppId = "2882303761520055541"
-    //小米推送平台获取到的AppKey
-    xmAppKey = "5222005592541"
-    //云信控制台上小米推送对应的证书名
-    xmCertificateName = "xiaomi_test1"
-    xmChannelId = "108552"
+    //云信控制台上FCM推送证书的名
+    fcmCertificateName = "myfcmtest"
+    //fcm通知类型推送使用的通知通道，如果不配置服务端会默认指定为“nim_message_channel_001”
+    fcmChannelId = ""
+    //是否使用新版（FCM HTTP V1 推送）,根据云信控制台对应的证书名是否为V1版本配置。
+    fcmHttpV1Enable = true
+
+    /**
+     * 荣耀推送相关配置
+     */
+    // 传入荣耀推送证书名，荣耀推送的 appId请在 AndroidManifest.xml 文件中配置
+    honorAppId = "100100577"
+    honorCertificateName = "honorTest"
+    //推送消息分类-配置前需在第三方平台（荣耀）申请消息自分类权益，具体详见 荣耀官方文档
+    //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
+    honorImportance = "NORMAL"
+
 
     /**
      * 华为推送相关配置：
@@ -31,28 +43,11 @@ ext {
     hwAppId = "104770765"
     // 传入云信控制台上华为推送证书名
     hwCertificateName = "huaweiceshi"
+    //推送消息分类-配置前需在第三方平台（华为）申请消息自分类权益，具体详见 华为官方文档
+    //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
+    hwCategory = "IM"
+    //推送消息使用的通知通道
     hwChannelId = ""
-
-
-    /**
-     * 荣耀推送相关配置
-     */
-    // 传入荣耀推送证书名，荣耀推送的 appId请在 AndroidManifest.xml 文件中配置
-    honorAppId = "100100577"
-    honorCertificateName = "honorTest"
-    honorChannelId = ""
-
-    /**
-     * vivo推送相关配置
-     */
-    //// 传入云信控制台上配置的vivo推送证书名,vivo 推送的 appId appKey请在 AndroidManifest.xml 文件中配置
-    vivoCertificateName = "vivoTest"
-    //你的 vivo 推送 app key
-    vivoAppKey = "a51da7ed008d22de3ad7937be1e707f7"
-    //你的 vivo 推送的 app id
-    vivoAppId = "103397457"
-    vivoChannelId = ""
-
 
     /**
      * OPPO推送相关配置
@@ -63,8 +58,36 @@ ext {
     oppoAppSercet = "0be0ee1ef3fb431587efd2a0f0a30a43"
     // 传入云信控制台上配置的oppo推送证书名
     oppoCertificateName = "certificat_oppo"
-    //oppo控制台申请的通知通道id，也可以在代码中生成payload的时候通过PushPayloadBuilder#addChannelId自行添加
+    //推送消息分类-请提前在第三方平台（OPPO）申请channel并完成消息分类配置后，将channel对应的channel_id获取填入上方即可完成配置，具体详见 OPPO官方文档
+    //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
     oppoChannelId = ""
+
+    /**
+     * vivo推送相关配置
+     */
+    //// 传入云信控制台上配置的vivo推送证书名,vivo 推送的 appId appKey请在 AndroidManifest.xml 文件中配置
+    vivoCertificateName = "vivoTest"
+    //你的 vivo 推送 app key
+    vivoAppKey = "a51da7ed008d22de3ad7937be1e707f7"
+    //你的 vivo 推送的 app id
+    vivoAppId = "103397457"
+    //推送消息分类-请提前在第三方平台（OPPO）申请channel并完成消息分类配置后，将channel对应的channel_id获取填入下方即可完成配置，具体详见 OPPO官方文档
+    //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
+    vivoCategory = "IM"
+
+    /**
+     * 小米推送相关配置信息
+     */
+    //小米推送平台获取到的AppId
+    xmAppId = "2882303761520055541"
+    //小米推送平台获取到的AppKey
+    xmAppKey = "5222005592541"
+    //云信控制台上小米推送对应的证书名
+    xmCertificateName = "xiaomi_test1"
+    //推送消息分类-请提前在第三方平台（小米）申请channel并完成消息分类配置后，将channel对应的channel_id获取填入上方即可完成配置，具体详见 小米官方文档
+    //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
+    xmChannelId = ""
+
     /**
      * 魅族推送相关配置
      */
@@ -73,20 +96,6 @@ ext {
     // 传入云信控制台上配置的魅族推送证书名
     mzCertificateName = "meizuTest"
     mzChannelId = ""
-
-
-    /**
-     * FCM推送相关配置:
-     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
-     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
-     */
-    //云信控制台上FCM推送证书的名
-    fcmCertificateName = "myfcmtest"
-    fcmChannelId = "1"
-    //是否使用新版（FCM HTTP V1 推送）,根据云信控制台对应的证书名是否为V1版本配置。
-    fcmHttpV1Enable = true
-
-
 }
 
 //添加标志位，保证只执行一次
