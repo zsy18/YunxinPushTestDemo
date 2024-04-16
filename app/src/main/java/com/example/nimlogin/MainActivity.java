@@ -4,14 +4,18 @@ import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
+import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -22,6 +26,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.NotifyClickAction;
+import com.example.pushlib.pushpayload.NotifyEffectMode;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
 import com.netease.nimlib.sdk.StatusCode;
@@ -35,17 +41,24 @@ import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.net.URISyntaxException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
-    private TextView tvLoginStatus,tvToken;
+    private TextView tvLoginStatus, tvToken;
     private Button btnLogout;
     private static final String TEST_ACCID = "改为发送端的accid";
     String[] channelIds = new String[]{
             BuildConfig.oppoChannelId,
-            BuildConfig.hwChannelId
+            BuildConfig.hwChannelId,
+            BuildConfig.xmChannelId,
+            BuildConfig.fcmChannelId
+
     };
     private boolean hasUpdate = false;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -55,9 +68,9 @@ public class MainActivity extends AppCompatActivity {
         registerImListener(true);
         checkPermission();
         //关闭消息提醒，防止干扰推送测试。
-        NIMClient.toggleNotification(false);
+        NIMClient.toggleNotification(true);
         for (String channelId : channelIds) {
-            if (!TextUtils.isEmpty(channelId)){
+            if (!TextUtils.isEmpty(channelId)) {
                 buildMessageChannel(channelId);
             }
         }
@@ -70,8 +83,8 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         intent.getExtras();
         String sessionID = intent.getStringExtra(SESSION);
-        if (!TextUtils.isEmpty(sessionID)){
-            Toast.makeText(this, SESSION+":"+sessionID, Toast.LENGTH_SHORT).show();
+        if (!TextUtils.isEmpty(sessionID)) {
+            Toast.makeText(this, SESSION + ":" + sessionID, Toast.LENGTH_SHORT).show();
 
         }
     }
@@ -79,8 +92,8 @@ public class MainActivity extends AppCompatActivity {
     @TargetApi(Build.VERSION_CODES.O)
     private void buildMessageChannel(String channelId) {
         NotificationManager manager = ((NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE));
-        NotificationChannel channel = new NotificationChannel(channelId, "会话提醒", NotificationManager.IMPORTANCE_DEFAULT);
-        channel.setDescription("NIM_CHANNEL_DESC");
+        NotificationChannel channel = new NotificationChannel(channelId, "会话提醒" + channelId, NotificationManager.IMPORTANCE_DEFAULT);
+        channel.setDescription("NIM_CHANNEL_DESC" + channelId);
         manager.createNotificationChannel(channel);
     }
 
@@ -100,22 +113,59 @@ public class MainActivity extends AppCompatActivity {
         findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(MainActivity.this,SendMessageActivity.class);
+                Intent intent = new Intent(MainActivity.this, SendMessageActivity.class);
                 startActivity(intent);
             }
         });
     }
 
+    private void showNotification() {
+
+
+// 创建通知
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel_id")
+                .setContentTitle("My Notification")
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setContentText("This is a notification message")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
+
+// 点击通知后跳转到特定的 Activity
+        NotifyClickAction clickAction = new NotifyClickAction.Builder()
+                .setIntentAction("android.intent.action.VIEW")
+                .addIntentCategory("android.intent.category.DEFAULT")
+                .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
+                .setIntentDataScheme("im")
+                .setIntentDataHost(com.example.nimlogin.BuildConfig.APPLICATION_ID)
+                .setIntentDataPath("/p2pPage?")
+                .build();
+        Intent intent = null;
+
+        try {
+            String click = clickAction.getIntentFilterString();
+            Log.e("ActivityTaskManager", click);
+            intent = Intent.parseUri(click, Intent.URI_INTENT_SCHEME);
+        } catch (URISyntaxException e) {
+            throw new RuntimeException(e);
+        }
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
+        builder.setContentIntent(pendingIntent);
+        builder.setChannelId("1");
+
+        // 显示通知
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+        notificationManager.notify(1, builder.build());
+    }
+
     private void registerImListener(boolean register) {
-        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver,register);
-        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver,register);
-        NIMClient.getService(MixPushServiceObserve.class).observeMixPushToken(mixPushTokenObserver,register);
+        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver, register);
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver, register);
+        NIMClient.getService(MixPushServiceObserve.class).observeMixPushToken(mixPushTokenObserver, register);
     }
 
     private void checkPermission() {
         String permission = "android.permission.POST_NOTIFICATIONS";
         boolean hasPermission = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
-        if (!hasPermission){
+        if (!hasPermission) {
             String[] permissions = new String[]{permission};
             ActivityCompat.requestPermissions(this, permissions, 100);
         }
@@ -127,18 +177,19 @@ public class MainActivity extends AppCompatActivity {
         registerImListener(false);
 
     }
+
     private Observer mixPushTokenObserver = new Observer<MixPushToken>() {
         @Override
         public void onEvent(MixPushToken mixPushToken) {
 
-            tvToken.setText(mixPushToken.getTokenName()+"证书的token: "+mixPushToken.getToken());
+            tvToken.setText(mixPushToken.getTokenName() + "证书的token: " + mixPushToken.getToken());
 
         }
     };
     private Observer receiveMessageObserver = new Observer<List<IMMessage>>() {
         @Override
         public void onEvent(List<IMMessage> imMessages) {
-            String toast = "收到消息，会话："+imMessages.get(0).getSessionId();
+            String toast = "收到消息，会话：" + imMessages.get(0).getSessionId();
             Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
         }
     };
@@ -197,11 +248,62 @@ public class MainActivity extends AppCompatActivity {
                     break;
             }
             tvLoginStatus.setText(userStatus);
-            Log.e("mytest","登录状态："+userStatus);
+            Log.e("mytest", "登录状态：" + userStatus);
             //判断当前状态是否要进行手动登录。
-            if (LoginActivity.shouldJumpToLoginActivity()){
+            if (LoginActivity.shouldJumpToLoginActivity()) {
                 LoginActivity.startLoginActivity(MainActivity.this);
             }
         }
     };
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        boolean isHonor = isHonorNewDevice();
+        Log.e("mytest","isHonor:"+isHonor);
+
+    }
+
+    private boolean isHonorOldDevice() {
+        String isEmotionOs = getBuildVersion("ro.build.version.emui");
+        if (isHonorDevice() && !TextUtils.isEmpty(isEmotionOs)) {
+            return true;
+        }
+        return false;
+    }
+
+    public static String getBuildVersion(String key) {
+        String buildVersion = "";
+        try {
+            Class<?> clazz = Class.forName("android.os.SystemProperties");
+            Method method = clazz.getDeclaredMethod("get", String.class);
+            buildVersion = (String) method.invoke(clazz, key);
+        } catch (ClassNotFoundException e) {
+            Log.e("HONOR", "getBuildVersion ClassNotFoundException" + e.getMessage());
+        } catch (NoSuchMethodException e) {
+            Log.e("HONOR", "getBuildVersion NoSuchMethodException" +
+                    e.getMessage());
+        } catch (IllegalAccessException e) {
+            Log.e("HONOR", "getBuildVersion IllegalAccessException" + e.getMessage());
+        } catch (InvocationTargetException e) {
+            Log.e("HONOR", "getBuildVersion InvocationTargetException" +
+                    e.getMessage());
+        } catch (Exception e) {
+            Log.e("HONOR", "getBuildVersion Exception" + e.getMessage());
+        }
+        Log.i("HONOR", "getBuildVersion: " + buildVersion);
+        return buildVersion;
+    }
+
+    private boolean isHonorDevice() {
+        return Build.MANUFACTURER.equalsIgnoreCase("HONOR");
+    }
+
+    private boolean isHonorNewDevice() {
+        if (isHonorDevice() && !isHonorOldDevice()) {
+            return true; // 新荣耀产品(无 HMS 预装) }
+        } else {
+            return false; //荣耀产品(有 HMS 预装) }}
+        }
+    }
 }

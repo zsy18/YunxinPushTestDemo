@@ -1,10 +1,16 @@
 package com.example.pushlib.pushpayload;
 
 import android.app.Activity;
+import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.text.TextUtils;
 
+import com.example.pushlib.BuildConfig;
+
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -16,7 +22,7 @@ public class NotifyClickAction {
     private NotifyEffectMode notifyEffect;
     private Class<? extends Activity> clickActivity;
     private String intentAction = Intent.ACTION_VIEW;
-    private List<String> intentCategoryList;
+    private List<String> intentCategoryList = new ArrayList<>();
     private String intentDataScheme;
     private String intentDataHost;
     private String intentDataPort;
@@ -55,29 +61,35 @@ public class NotifyClickAction {
         return webUrl;
     }
 
-    protected String getIntentFilterString() {
+    public String getIntentFilterString() {
         return getIntentFilterString(null);
 
     }
 
     public String getIntentFilterString(Map<String, String> customData) {
         String intentFilterString = "";
-        Intent intent = new Intent(intentAction);
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        if (intentCategoryList != null && intentCategoryList.size() > 0) {
-            for (String s : intentCategoryList) {
-                intent.addCategory(s);
+        Intent intent = new Intent();
+        if (clickActivity != null) {
+            intent.setClassName(BuildConfig.APPLICATION_ID, clickActivity.getName());
+        } else {
+            intent.setAction(intentAction);
+            if (intentCategoryList != null && intentCategoryList.size() > 0) {
+                for (String s : intentCategoryList) {
+                    intent.addCategory(s);
+                }
+            }
+            Uri intentSchemeUri = getIntentSchemeUri();
+            if (intentSchemeUri != null) {
+                intent.setData(intentSchemeUri);
+            }
+            if (customData != null && customData.size() > 0) {
+                for (String s : customData.keySet()) {
+                    intent.putExtra(s, customData.get(s));
+                }
             }
         }
-        Uri intentSchemeUri = getIntentSchemeUri();
-        if (intentSchemeUri != null) {
-            intent.setData(intentSchemeUri);
-        }
-        if (customData != null && customData.size() > 0) {
-            for (String s : customData.keySet()) {
-                intent.putExtra(s, customData.get(s));
-            }
-        }
+//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+//        intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
         intentFilterString = intent.toUri(Intent.URI_INTENT_SCHEME);
         return intentFilterString;
     }

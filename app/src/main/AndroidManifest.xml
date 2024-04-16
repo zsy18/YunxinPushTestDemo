@@ -1,7 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
-    <!-- 访问网络状态 -->
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 访问网络状态 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
@@ -24,6 +27,7 @@
     <uses-permission android:name="com.coloros.mcs.permission.RECIEVE_MCS_MESSAGE" />
     <uses-permission android:name="com.heytap.mcs.permission.RECIEVE_MCS_MESSAGE" /> <!-- 兼容 Flyme5 以下版本，魅族内部接入 PushSDK 必填，不然无法收到消息 -->
     <uses-permission android:name="com.meizu.flyme.push.permission.RECEIVE" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
 
     <permission
         android:name="${applicationId}.push.permission.MESSAGE"
@@ -50,15 +54,34 @@
         android:theme="@style/Theme.NIMLogin"
         tools:targetApi="31">
         <activity
+            android:name=".CallActivity"
+            android:exported="false" />
+        <activity
+            android:name=".NotificationClassClickActivity"
+            android:exported="false"
+            android:label="ClassClickActivity"
+            android:launchMode="singleTask" />
+        <activity
             android:name=".NotificationActionClickActivity"
             android:exported="true"
             android:label="NotificationActionClickActivity">
             <intent-filter>
                 <action android:name="${applicationId}.openP2PView" />
+
+                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
-
         </activity>
+
+        <service
+            android:name=".MyFcmService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.google.firebase.MESSAGING_EVENT" />
+                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
+            </intent-filter>
+        </service>
+
         <activity
             android:name=".NotificationDataClickActivity"
             android:exported="true"
@@ -66,12 +89,12 @@
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
 
+                <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
                 <data
                     android:host="${applicationId}"
                     android:path="/p2pPage"
-                    android:port="8080"
                     android:scheme="im" />
             </intent-filter>
         </activity>

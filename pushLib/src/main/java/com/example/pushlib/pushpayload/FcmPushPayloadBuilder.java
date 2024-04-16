@@ -4,16 +4,15 @@ import android.text.TextUtils;
 
 import com.example.pushlib.BuildConfig;
 
-import org.json.JSONObject;
-
 import java.util.HashMap;
 import java.util.Map;
 
-public class HonorPushPayloadBuilder implements IPushPayloadBuilder{
+public class FcmPushPayloadBuilder implements IPushPayloadBuilder{
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
+    private String mChannelId = BuildConfig.fcmChannelId;
+    private Map<String, Object> mPayloadMap = new HashMap<>();
 
-    private Map<String, Object> payloadMap = new HashMap<>();
 
     @Override
     public IPushPayloadBuilder setPushTitle(String title) {
@@ -29,71 +28,54 @@ public class HonorPushPayloadBuilder implements IPushPayloadBuilder{
         return null;
     }
 
+    /**
+     * fcm推送没有提供测试开关字段
+     * @param enable
+     * @return
+     */
     @Override
     public IPushPayloadBuilder enableTestPushMode(boolean enable) {
-        //测试消息，用于测试接入，上线需要注释。
-        if (enable){
-            payloadMap.put("targetUserType",1);
-        }else {
-            payloadMap.put("targetUserType",0);
-        }
         return null;
     }
 
     @Override
     public IPushPayloadBuilder setClickAction(NotifyClickAction clickAction) {
         this.mClickAction = clickAction;
+
         return null;
     }
 
-    /**
-     * 荣耀推送没有提供配置channelId的字段。
-     * @param builderType
-     * @param channelId
-     * @return
-     */
     @Override
     public IPushPayloadBuilder addChannelId(PushPayloadBuilderType builderType, String channelId) {
+        mChannelId = channelId;
         return null;
     }
 
-    /**
-     * 消息点击行为类型，取值如下：
-     * 1：打开应用自定义页面
-     * 2：点击后打开特定URL
-     * 3：点击后打开应用
-     * @return
-     */
     @Override
     public Map<String, Object> generatePayload() {
-        Map<String, Object> notificationMap = new HashMap<>();
         if (mClickAction != null) {
-            Map<String, Object> clickActionMap = new HashMap<>();
             NotifyEffectMode effectMode = mClickAction.getNotifyEffect();
             switch (effectMode) {
                 case EFFECT_MODE_APP:
-                    clickActionMap.put("type",3);
                     break;
                 case EFFECT_MODE_CONTENT:
-                    clickActionMap.put("type",1);
                     String intentFilterString = mClickAction.getIntentFilterString();
-                    clickActionMap.put("intent",intentFilterString);
+                    mPayloadMap.put("click_action",intentFilterString);
                     break;
                 case EFFECT_MODE_WEB:
-                    clickActionMap.put("type",2);
-                    clickActionMap.put("url",mClickAction.getWebUrl());
+                    mPayloadMap.put("click_action",mClickAction.getWebUrl());
+
                     break;
             }
-            notificationMap.put("clickAction",clickActionMap);
-
         }
-        notificationMap.put("importance","NORMAL");
-        payloadMap.put("notification",notificationMap);
 
         if (mCustomDataMap != null && mCustomDataMap.size() > 0) {
-            JSONObject json = new JSONObject(mCustomDataMap);
-            payloadMap.put("data", json.toString());
+            mPayloadMap.put("data", mCustomDataMap);
         }
-        return payloadMap;
+
+        if (!TextUtils.isEmpty(mChannelId)){
+            mPayloadMap.put("channel_id",mChannelId);
+        }
+        return mPayloadMap;
     }
 }

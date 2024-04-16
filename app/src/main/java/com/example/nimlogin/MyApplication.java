@@ -7,6 +7,7 @@ import com.example.pushlib.MixPushConfigGenerator;
 import com.hihonor.push.sdk.HonorPushClient;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.SDKOptions;
+import com.netease.nimlib.sdk.StatusBarNotificationConfig;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.util.NIMUtil;
 
@@ -29,8 +30,10 @@ public class MyApplication extends Application {
             loginInfo = new LoginInfo(account, token);
         }
         SDKOptions sdkOptions = new SDKOptions();
+        sdkOptions.statusBarNotificationConfig = new StatusBarNotificationConfig();
         sdkOptions.mixPushConfig = MixPushConfigGenerator.loadPushConfig();
         sdkOptions.sdkStorageRootPath = getExternalCacheDir().getPath() + "/nim";
+        sdkOptions.disableAwake = true;
         NIMClient.init(this, loginInfo, sdkOptions);
         if (NIMUtil.isMainProcess(this)) {
 

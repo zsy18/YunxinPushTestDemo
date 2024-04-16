@@ -16,7 +16,7 @@ ext {
     xmAppKey = "5222005592541"
     //云信控制台上小米推送对应的证书名
     xmCertificateName = "xiaomi_test1"
-    xmChannelId = ""
+    xmChannelId = "108552"
 
     /**
      * 华为推送相关配置：
@@ -64,7 +64,7 @@ ext {
     // 传入云信控制台上配置的oppo推送证书名
     oppoCertificateName = "certificat_oppo"
     //oppo控制台申请的通知通道id，也可以在代码中生成payload的时候通过PushPayloadBuilder#addChannelId自行添加
-    oppoChannelId = "1"
+    oppoChannelId = ""
     /**
      * 魅族推送相关配置
      */
@@ -82,10 +82,13 @@ ext {
      */
     //云信控制台上FCM推送证书的名
     fcmCertificateName = "myfcmtest"
-    fcmChannelId = ""
+    fcmChannelId = "1"
+    //是否使用新版（FCM HTTP V1 推送）,根据云信控制台对应的证书名是否为V1版本配置。
+    fcmHttpV1Enable = true
 
 
 }
+
 //添加标志位，保证只执行一次
 int count = 0
 gradle.afterProject {

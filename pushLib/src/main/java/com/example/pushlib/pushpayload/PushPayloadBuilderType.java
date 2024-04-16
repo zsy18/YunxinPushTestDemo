@@ -6,7 +6,8 @@ public enum PushPayloadBuilderType {
     VIVO("vivoField"),
     OPPO("oppoField"),
     MEIZU(""),
-    FCS("fcmField"),
+    FCM("fcmField"),
+    FCMV1("fcmFieldV1"),
     HONER("honorField");
     private String type;
     PushPayloadBuilderType(String type){

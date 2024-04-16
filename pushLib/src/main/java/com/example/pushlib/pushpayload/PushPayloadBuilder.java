@@ -1,6 +1,5 @@
 package com.example.pushlib.pushpayload;
 
-import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -19,14 +18,27 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
 
     public PushPayloadBuilder() {
         //根据config.gradle文件中是否配置了云信平台的推送证书来决定是否生成对应的payload字段
-        if (!TextUtils.isEmpty(BuildConfig.hwCertificateName)) {
-            mBuilderMap.put(PushPayloadBuilderType.HUAWEI, new HwPushPayloadBuilder());
-        }
-        if (!TextUtils.isEmpty(BuildConfig.oppoCertificateName)) {
-            mBuilderMap.put(PushPayloadBuilderType.OPPO, new OppoPushPayloadBuilder());
-        }
-        if (!TextUtils.isEmpty(BuildConfig.xmCertificateName)){
-            mBuilderMap.put(PushPayloadBuilderType.XIAOMI, new XmPushPayloadBuilder());
+//        if (!TextUtils.isEmpty(BuildConfig.hwCertificateName)) {
+//            mBuilderMap.put(PushPayloadBuilderType.HUAWEI, new HwPushPayloadBuilder());
+//        }
+//        if (!TextUtils.isEmpty(BuildConfig.oppoCertificateName)) {
+//            mBuilderMap.put(PushPayloadBuilderType.OPPO, new OppoPushPayloadBuilder());
+//        }
+//        if (!TextUtils.isEmpty(BuildConfig.xmCertificateName)){
+//            mBuilderMap.put(PushPayloadBuilderType.XIAOMI, new XmPushPayloadBuilder());
+//        }
+//        if (!TextUtils.isEmpty(BuildConfig.honorCertificateName)){
+//            mBuilderMap.put(PushPayloadBuilderType.HONER, new HonorPushPayloadBuilder());
+//        }
+//        if (!TextUtils.isEmpty(BuildConfig.vivoCertificateName)){
+//            mBuilderMap.put(PushPayloadBuilderType.VIVO, new VivoPushPayloadBuilder());
+//        }
+        if (!TextUtils.isEmpty(BuildConfig.fcmCertificateName)){
+            if (BuildConfig.fcmHttpV1Enable){
+                mBuilderMap.put(PushPayloadBuilderType.FCMV1, new FcmV1PushPayloadBuilder());
+            }else {
+                mBuilderMap.put(PushPayloadBuilderType.FCM, new FcmPushPayloadBuilder());
+            }
         }
     }
 
@@ -57,6 +69,14 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
     public IPushPayloadBuilder addCustomData(String key, String data) {
         for (IPushPayloadBuilder value : mBuilderMap.values()) {
             value.addCustomData(key, data);
+        }
+        return this;
+    }
+
+    @Override
+    public IPushPayloadBuilder enableTestPushMode(boolean enable) {
+        for (IPushPayloadBuilder value : mBuilderMap.values()) {
+            value.enableTestPushMode(enable);
         }
         return this;
     }

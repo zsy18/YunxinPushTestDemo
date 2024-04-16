@@ -77,12 +77,17 @@
             android:id="@+id/rb_action"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="通过action配置打开自定义页面"/>
+            android:text="通过配置action打开自定义页面"/>
         <RadioButton
             android:id="@+id/rb_data"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="通过data配置打开自定义页面"/>
+            android:text="通过配置data打开自定义页面"/>
+        <RadioButton
+            android:id="@+id/rb_class"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="通过指定Activity打开自定义页面"/>
     </RadioGroup>
     <Button
         android:id="@+id/btn_send_message"

@@ -5,6 +5,9 @@ import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.SwitchCompat;
 
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.ResolveInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -30,6 +33,7 @@ import com.netease.nimlib.sdk.msg.model.IMMessage;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.List;
 import java.util.Map;
 
 public class SendMessageActivity extends AppCompatActivity {
@@ -67,6 +71,9 @@ public class SendMessageActivity extends AppCompatActivity {
                         break;
                     case R.id.rb_data:
                         selectIndex = 2;
+                        break;
+                    case R.id.rb_class:
+                        selectIndex = 3;
                         break;
                 }
             }
@@ -173,19 +180,54 @@ public class SendMessageActivity extends AppCompatActivity {
                     break;
                 case 2:
                     clickAction = new NotifyClickAction.Builder()
+                            .setIntentAction("android.intent.action.VIEW")
+                            .addIntentCategory("android.intent.category.DEFAULT")
                             .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
                             .setIntentDataScheme("im")
                             .setIntentDataHost(BuildConfig.APPLICATION_ID)
-                            .setIntentDataPath("/p2pPage")
-                            .setIntentDataPort("8080")
+                            .setIntentDataPath("/p2pPage?")
+                            .build();
+                    builder.setClickAction(clickAction);
+                    if (clickAction!=null){
+                        checkIntent(this,clickAction.getIntentFilterString());
+                    }
+                    break;
+                case 3:
+                    clickAction = new NotifyClickAction.Builder()
+                            .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
+                            .setClickActivity(NotificationClassClickActivity.class)
                             .build();
                     builder.setClickAction(clickAction);
                     break;
+
             }
         }
+
         if (customDataEnable) {
             builder.addCustomData(SESSION, etToAccid.getText().toString());
         }
+        builder.enableTestPushMode(true);
+
         return builder.generatePayload();
+    }
+    public static boolean checkIntent(Context context, String intentUri) {
+        try {
+            Intent intent = Intent.parseUri(intentUri, 0);
+            // 需要添加android.intent.category.BROWSABLE
+            // 荣耀推送服务7.0.51版本之前不支持Component配置，若要兼容之前版本，校验时需把Component置空
+            // intent.setComponent(null);
+            intent.setSelector(null);
+            List<ResolveInfo> resolveInfos = context.getPackageManager().queryIntentActivities(intent, 0);
+            if (resolveInfos != null && resolveInfos.size() > 0) {
+                for (ResolveInfo resolveInfo : resolveInfos) {
+                    if (resolveInfo.activityInfo != null && context.getPackageName().equals(resolveInfo.activityInfo.packageName)) {
+                        return true;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }

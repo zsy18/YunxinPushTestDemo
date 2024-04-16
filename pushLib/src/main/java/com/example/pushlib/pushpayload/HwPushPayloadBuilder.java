@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 public class HwPushPayloadBuilder implements IPushPayloadBuilder {
+    private Map<String, Object> payloadMap = new HashMap<>();
 
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
@@ -51,6 +52,16 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
             mCustomDataMap = new HashMap<>();
         }
         mCustomDataMap.put(key, data);
+        return null;
+    }
+
+    @Override
+    public IPushPayloadBuilder enableTestPushMode(boolean enable) {
+        if (enable){
+            payloadMap.put("target_user_type",1);
+        }else {
+            payloadMap.put("target_user_type",0);
+        }
         return null;
     }
 
@@ -77,7 +88,6 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
      */
     @Override
     public Map<String, Object> generatePayload() {
-        Map<String, Object> payloadMap = new HashMap<>();
         if (mClickAction != null) {
             Map<String, Object> clickActionMap = new HashMap<>();
             NotifyEffectMode effectMode = mClickAction.getNotifyEffect();
@@ -105,8 +115,6 @@ public class HwPushPayloadBuilder implements IPushPayloadBuilder {
             androidConfigMap.put("data", json.toString());
         }
         androidConfigMap.put("category","IM");
-        //测试消息，用于测试接入，上线需要注释。
-        androidConfigMap.put("target_user_type",1);
         if (androidConfigMap.size()>0){
             payloadMap.put("androidConfig",androidConfigMap);
         }

@@ -14,9 +14,12 @@ android {
                                 honorAppId:rootProject.ext.honorAppId,
                                 vivoAppKey:rootProject.ext.vivoAppKey,
                                 vivoAppId:rootProject.ext.vivoAppId]
+        buildConfigField "String","APPLICATION_ID","\"${rootProject.ext.APPLICATION_ID}\""
+
 
         buildConfigField "String","fcmCertificateName","\"${rootProject.ext.fcmCertificateName}\""
         buildConfigField "String","fcmChannelId","\"${rootProject.ext.fcmChannelId}\""
+        buildConfigField "boolean","fcmHttpV1Enable","${rootProject.ext.fcmHttpV1Enable}"
 
 
         buildConfigField "String","xmAppId","\"${rootProject.ext.xmAppId}\""
@@ -72,10 +75,10 @@ dependencies {
     api "com.netease.nimlib:push:${imVersion}"
 
     // firebase-messaging
-    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    api 'com.google.firebase:firebase-messaging:23.4.1'
     // firebase-analytics
-    implementation 'com.google.firebase:firebase-analytics:20.0.0'
-    implementation 'com.google.android.gms:play-services-base:18.2.0'
+    api 'com.google.firebase:firebase-analytics:21.6.1'
+    api 'com.google.android.gms:play-services-base:18.3.0'
     api 'com.hihonor.mcs:push:7.0.41.301'
 
 

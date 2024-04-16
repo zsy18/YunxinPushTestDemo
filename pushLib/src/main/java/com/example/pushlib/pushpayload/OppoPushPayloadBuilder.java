@@ -29,6 +29,11 @@ public class OppoPushPayloadBuilder implements IPushPayloadBuilder {
     }
 
     @Override
+    public IPushPayloadBuilder enableTestPushMode(boolean enable) {
+        return null;
+    }
+
+    @Override
     public IPushPayloadBuilder setClickAction(NotifyClickAction clickAction) {
         this.mClickAction = clickAction;
         return null;

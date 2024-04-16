@@ -5,13 +5,7 @@
         android:protectionLevel="signature" />
     <uses-permission android:name="${applicationId}.permission.MIPUSH_RECEIVE" />
     <application>
-        <service
-            android:name="com.netease.nimlib.mixpush.fcm.FCMTokenService"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="com.google.firebase.INSTANCE_ID_EVENT" />
-            </intent-filter>
-        </service>
+
         <receiver
             android:name="com.netease.nimlib.mixpush.mi.MiPushReceiver"
             android:exported="true">

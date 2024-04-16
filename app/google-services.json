@@ -1,36 +1,26 @@
 {
   "project_info": {
-    "project_number": "948177329213",
-    "project_id": "nimdemo-1e28a",
-    "storage_bucket": "nimdemo-1e28a.appspot.com"
+    "project_number": "197010138958",
+    "project_id": "im-demo-6b497",
+    "storage_bucket": "im-demo-6b497.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:948177329213:android:d6d4bcd66f72001a995e54",
+        "mobilesdk_app_id": "1:197010138958:android:ca01fd4ccbe8e6a43b601f",
         "android_client_info": {
           "package_name": "com.netease.nim.demo"
         }
       },
-      "oauth_client": [
-        {
-          "client_id": "948177329213-3qqniqvqevmdnfb4eb6mo85b93gr70na.apps.googleusercontent.com",
-          "client_type": 3
-        }
-      ],
+      "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyCdxbeqNQPXLL63nPWZygGvZLnYw4KjTSM"
+          "current_key": "AIzaSyBo8YVIdpPnvwMifKN14kzz-vgNSxABiKE"
         }
       ],
       "services": {
         "appinvite_service": {
-          "other_platform_oauth_client": [
-            {
-              "client_id": "948177329213-3qqniqvqevmdnfb4eb6mo85b93gr70na.apps.googleusercontent.com",
-              "client_type": 3
-            }
-          ]
+          "other_platform_oauth_client": []
         }
       }
     }

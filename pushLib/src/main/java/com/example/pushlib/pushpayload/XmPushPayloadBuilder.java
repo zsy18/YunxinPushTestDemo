@@ -26,6 +26,16 @@ public class XmPushPayloadBuilder implements IPushPayloadBuilder{
         return null;
     }
 
+    /**
+     * 小米不支持调试模式
+     * @param enable
+     * @return
+     */
+    @Override
+    public IPushPayloadBuilder enableTestPushMode(boolean enable) {
+        return null;
+    }
+
     @Override
     public IPushPayloadBuilder setClickAction(NotifyClickAction clickAction) {
         this.mClickAction = clickAction;
@@ -67,6 +77,9 @@ public class XmPushPayloadBuilder implements IPushPayloadBuilder{
         }
         if (!TextUtils.isEmpty(mChannelId)){
             payloadMap.put("channel_id",mChannelId);
+        }
+        if (mCustomDataMap!=null&&mCustomDataMap.size()>0){
+            payloadMap.putAll(mCustomDataMap);
         }
         return payloadMap;
     }

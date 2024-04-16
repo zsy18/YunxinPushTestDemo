@@ -21,6 +21,13 @@ public interface IPushPayloadBuilder {
     IPushPayloadBuilder addCustomData(String key,String data);
 
     /**
+     * 开启推送的测试开关，默认关闭，上架前必须要关闭。部分厂商支持审核中应用测试推送，如vivo、华为、荣耀
+     * @param enable
+     * @return
+     */
+    IPushPayloadBuilder enableTestPushMode(boolean enable);
+
+    /**
      * 添加点击跳转行为
      * @param clickAction
      * @return
