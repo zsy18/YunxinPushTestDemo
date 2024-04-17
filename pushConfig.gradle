@@ -9,10 +9,9 @@ ext {
 
     /**
      * FCM推送相关配置:
-     * 1、如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的 id "com.google.gms.google-services"配置，防止编译不通过
-     * 2、如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
+     * 如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中的google-services.json文件
      */
-    //云信控制台上FCM推送证书的名
+    //云信控制台上FCM推送证书的证书名称
     fcmCertificateName = "myfcmtest"
     //fcm通知类型推送使用的通知通道，如果不配置服务端会默认指定为“nim_message_channel_001”
     fcmChannelId = ""
@@ -20,10 +19,15 @@ ext {
     fcmHttpV1Enable = true
 
     /**
-     * 荣耀推送相关配置
+     * 荣耀推送相关配置：
+     * 1、如果使用荣耀推送，需要用荣耀官网上下载的客户端json证书替换项目中的mcs-services.json文件
+     * 2、荣耀推送token生成需要在华为控制台应用下添加打包签名文件的证书指纹，下面的证书指纹为本项目debug.keystore的SHA256值
+     * 可以添加到对应测试应用的“SHA256证书指纹”配置项中，或者把已经添加过证书指纹的keystore文件替换本项目的debug.keystore文件。
+     * SHA256: 45:C9:74:1D:F5:67:38:42:A8:0A:C4:BD:BF:45:01:D9:4B:E5:04:79:F1:07:5E:28:CC:E8:12:D1:B2:C4:E8:8C
      */
-    // 传入荣耀推送证书名，荣耀推送的 appId请在 AndroidManifest.xml 文件中配置
+    // 传入荣耀推送证书名
     honorAppId = "100100577"
+    //云信控制台上对应推送证书的证书名称
     honorCertificateName = "honorTest"
     //推送消息分类-配置前需在第三方平台（荣耀）申请消息自分类权益，具体详见 荣耀官方文档
     //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
@@ -32,16 +36,15 @@ ext {
 
     /**
      * 华为推送相关配置：
-     * 1、如不使用华为推送，需要删除app/build.gradle文件下的plugin里的 id 'com.huawei.agconnect'配置，防止编译不通过
-     * 2、如果使用华为推送，需要用华为官网上下载的客户端json证书替换项目中的agconnect-services.json文件
-     * 3、华为推送token生成需要在华为控制台应用下添加打包签名文件的证书指纹，下面的证书指纹为本项目debug.keystore的SHA256值
+     * 1、如果使用华为推送，需要用华为官网上下载的客户端json证书替换项目中的agconnect-services.json文件
+     * 2、华为推送token生成需要在华为控制台应用下添加打包签名文件的证书指纹，下面的证书指纹为本项目debug.keystore的SHA256值
      * 可以添加到对应测试应用的“SHA256证书指纹”配置项中，或者把已经添加过证书指纹的keystore文件替换本项目的debug.keystore文件。
      * 否则会出现错误：“6003: certificate fingerprint error”
      * SHA256: 45:C9:74:1D:F5:67:38:42:A8:0A:C4:BD:BF:45:01:D9:4B:E5:04:79:F1:07:5E:28:CC:E8:12:D1:B2:C4:E8:8C
      */
     // 传入华为推送的APP ID
     hwAppId = "104770765"
-    // 传入云信控制台上华为推送证书名
+    // 传入云信控制台上华为推送证书名称
     hwCertificateName = "huaweiceshi"
     //推送消息分类-配置前需在第三方平台（华为）申请消息自分类权益，具体详见 华为官方文档
     //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
@@ -56,7 +59,7 @@ ext {
     oppoAppKey = "e5a3fb46306f45c780b3be1f3b1e7c32"
     // 注意区分AppSercet与MasterSecret
     oppoAppSercet = "0be0ee1ef3fb431587efd2a0f0a30a43"
-    // 传入云信控制台上配置的oppo推送证书名
+    // 传入云信控制台上配置的oppo推送证书名称
     oppoCertificateName = "certificat_oppo"
     //推送消息分类-请提前在第三方平台（OPPO）申请channel并完成消息分类配置后，将channel对应的channel_id获取填入上方即可完成配置，具体详见 OPPO官方文档
     //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
@@ -65,7 +68,7 @@ ext {
     /**
      * vivo推送相关配置
      */
-    //// 传入云信控制台上配置的vivo推送证书名,vivo 推送的 appId appKey请在 AndroidManifest.xml 文件中配置
+    //// 传入云信控制台上配置的vivo推送证书名称
     vivoCertificateName = "vivoTest"
     //你的 vivo 推送 app key
     vivoAppKey = "a51da7ed008d22de3ad7937be1e707f7"
@@ -82,7 +85,7 @@ ext {
     xmAppId = "2882303761520055541"
     //小米推送平台获取到的AppKey
     xmAppKey = "5222005592541"
-    //云信控制台上小米推送对应的证书名
+    //云信控制台上小米推送对应的证书名称
     xmCertificateName = "xiaomi_test1"
     //推送消息分类-请提前在第三方平台（小米）申请channel并完成消息分类配置后，将channel对应的channel_id获取填入上方即可完成配置，具体详见 小米官方文档
     //此处配置后会替换云信控制台中-“第三方消息推送分类 子功能配置”中的设置
@@ -93,7 +96,7 @@ ext {
      */
     mzAppId = "148192"
     mzAppKey = "6068c5a8323542deaf83ad5b6d3ca9e2"
-    // 传入云信控制台上配置的魅族推送证书名
+    // 传入云信控制台上配置的魅族推送证书名称
     mzCertificateName = "meizuTest"
     mzChannelId = ""
 }

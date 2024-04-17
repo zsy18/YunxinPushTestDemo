@@ -12,7 +12,7 @@ plugins {
     id 'com.android.library' version '7.2.0' apply false
 }
 
-apply from:"config.gradle"
+apply from:"pushConfig.gradle"
 //buildscript.dependencies.add("classpath","com.android.tools.build:gradle:7.2.0")
 
 //buildscript {

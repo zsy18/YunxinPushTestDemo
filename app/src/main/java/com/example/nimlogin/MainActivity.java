@@ -49,13 +49,11 @@ import java.util.List;
 public class MainActivity extends AppCompatActivity {
     private TextView tvLoginStatus, tvToken;
     private Button btnLogout;
-    private static final String TEST_ACCID = "改为发送端的accid";
     String[] channelIds = new String[]{
             BuildConfig.oppoChannelId,
             BuildConfig.hwChannelId,
             BuildConfig.xmChannelId,
             BuildConfig.fcmChannelId
-
     };
     private boolean hasUpdate = false;
 

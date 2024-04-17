@@ -8,7 +8,8 @@ public enum PushPayloadBuilderType {
     MEIZU(""),
     FCM("fcmField"),
     FCMV1("fcmFieldV1"),
-    HONER("honorField");
+    HONER("honorField"),
+    APNS("apsField");
     private String type;
     PushPayloadBuilderType(String type){
         this.type = type;
