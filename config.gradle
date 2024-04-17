@@ -1,0 +1,16 @@
+ext{
+    //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
+    APP_KEY = "45c6af3c98409b18a84451215d0bdd6e"
+    //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
+    APPLICATION_ID = "com.netease.nim.demo"
+    /**
+     * FCM推送相关配置:
+     * 如不使用FCM推送，需要删除app/build.gradle文件下的plugin里的
+     * id "com.google.gms.google-services"配置，防止编译不通过
+     * 如果使用FCM推送，需要用FCM官网上下载的客户端json证书替换项目中
+     * 的google-services.json文件
+     */
+    //配置在云信控制台设置的FCM推送证书的名字
+    fcmCertificateName = "myfcmtest"
+
+}
