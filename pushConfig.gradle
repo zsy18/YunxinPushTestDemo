@@ -6,12 +6,19 @@ ext {
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
     APPLICATION_ID = "com.netease.nim.demo"
     GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
+    //fcm推送远端依赖
     PUSH_SDK_FCM = "com.google.firebase:firebase-messaging:23.4.1"
+    //华为推送远端依赖
     PUSH_SDK_HW = "com.huawei.hms:push:6.9.0.300"
+    //荣耀推送远端依赖
     PUSH_SDK_HONOR = "com.hihonor.mcs:push:7.0.41.301"
+    //魅族推送远端依赖
     PUSH_SDK_MZ = "com.meizu.flyme.internet:push-internal:4.2.3"
+    //小米推送库本地文件路径，替换pushLib/lib下的推送sdk后需要更改此处配置的文件名
     PUSH_SDK_XM = "libs/MiPush_SDK_Client_5_6_2-C_3rd.aar"
+    //vivo推送库本地文件路径，替换pushLib/lib下的推送sdk后需要更改此处配置的文件名
     PUSH_SDK_VIVO = "libs/vivo_pushSDK_v3.0.0.4_484.aar"
+    //oppo推送库本地文件路径，替换pushLib/lib下的推送sdk后需要更改此处配置的文件名
     PUSH_SDK_OPPO = "libs/com.heytap.msp_3.1.0.aar"
 
     /**

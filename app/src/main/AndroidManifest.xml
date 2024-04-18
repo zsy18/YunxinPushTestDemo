@@ -54,9 +54,6 @@
         android:theme="@style/Theme.NIMLogin"
         tools:targetApi="31">
         <activity
-            android:name=".CallActivity"
-            android:exported="false" />
-        <activity
             android:name=".NotificationClassClickActivity"
             android:exported="false"
             android:label="ClassClickActivity"
@@ -67,7 +64,7 @@
             android:label="NotificationActionClickActivity">
             <intent-filter>
                 <action android:name="${applicationId}.openP2PView" />
-
+                <!--荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category-->
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -88,7 +85,7 @@
             android:label="DataClickActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-
+                <!--荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category-->
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
