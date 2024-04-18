@@ -1,11 +1,18 @@
 ext {
-
+    //主项目使用到的IM版本
     imVersion = "9.14.0"
     //云信的appkey，对应清单文件中的com.netease.nim.appKey的值
     APP_KEY = "4727023efa991d31d61b3b32e819bd5b"
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
     APPLICATION_ID = "com.netease.nim.demo"
     GRANDL_PLUGIN = "com.android.tools.build:gradle:7.2.0"
+    PUSH_SDK_FCM = "com.google.firebase:firebase-messaging:23.4.1"
+    PUSH_SDK_HW = "com.huawei.hms:push:6.9.0.300"
+    PUSH_SDK_HONOR = "com.hihonor.mcs:push:7.0.41.301"
+    PUSH_SDK_MZ = "com.meizu.flyme.internet:push-internal:4.2.3"
+    PUSH_SDK_XM = "libs/MiPush_SDK_Client_5_6_2-C_3rd.aar"
+    PUSH_SDK_VIVO = "libs/vivo_pushSDK_v3.0.0.4_484.aar"
+    PUSH_SDK_OPPO = "libs/com.heytap.msp_3.1.0.aar"
 
     /**
      * FCM推送相关配置:
@@ -14,7 +21,7 @@ ext {
     //云信控制台上FCM推送证书的证书名称
     fcmCertificateName = "myfcmtest"
     //fcm通知类型推送使用的通知通道，如果不配置服务端会默认指定为“nim_message_channel_001”
-    fcmChannelId = ""
+    fcmChannelId = "nim_message_channel_001"
     //是否使用新版（FCM HTTP V1 推送）,根据云信控制台对应的证书名是否为V1版本配置。
     fcmHttpV1Enable = true
 

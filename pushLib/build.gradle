@@ -69,25 +69,41 @@ android {
 }
 
 dependencies {
-    api fileTree(include: ['*.jar', '*.aar'], dir: 'libs')
 
-    api 'com.huawei.hms:push:6.9.0.300'
     api "com.netease.nimlib:basesdk:${imVersion}"
     api "com.netease.nimlib:push:${imVersion}"
+    //vivo推送
+    if (!rootProject.ext.vivoCertificateName.isEmpty()){
+        api files(rootProject.ext.PUSH_SDK_VIVO)
+    }
+    //小米推送
+    if (!rootProject.ext.xmCertificateName.isEmpty()){
+        api files(rootProject.ext.PUSH_SDK_XM)
+    }
+    //FCM推送
+    if (!rootProject.ext.fcmCertificateName.isEmpty()){
+        api rootProject.ext.PUSH_SDK_FCM
+    }
+    //荣耀推送
+    if (!rootProject.ext.honorCertificateName.isEmpty()){
+        api rootProject.ext.PUSH_SDK_HONOR
+    }
+    //魅族推送
+    if (!rootProject.ext.mzCertificateName.isEmpty()){
+        api rootProject.ext.PUSH_SDK_MZ
+    }
+    //华为推送
+    if (!rootProject.ext.hwCertificateName.isEmpty()){
+        api rootProject.ext.PUSH_SDK_HW
+    }
+    //oppo推送
+    if (!rootProject.ext.fcmCertificateName.isEmpty()){
+        implementation files(rootProject.ext.PUSH_SDK_OPPO)
+        //oppo推送以下依赖都需要添加
+        implementation 'com.google.code.gson:gson:2.10.1'
+        implementation 'commons-codec:commons-codec:1.6'
+        implementation 'androidx.annotation:annotation:1.1.0'
+    }
 
-    // firebase-messaging
-    api 'com.google.firebase:firebase-messaging:23.4.1'
-    // firebase-analytics
-    api 'com.google.firebase:firebase-analytics:21.6.1'
-    api 'com.google.android.gms:play-services-base:18.3.0'
-    api 'com.hihonor.mcs:push:7.0.41.301'
-
-
-    //oppo推送以下依赖都需要添加
-    implementation 'com.google.code.gson:gson:2.10.1'
-    implementation 'commons-codec:commons-codec:1.6'
-    implementation 'androidx.annotation:annotation:1.1.0'
-    //魅族推送sdk
-    implementation 'com.meizu.flyme.internet:push-internal:4.2.3'
 
 }
