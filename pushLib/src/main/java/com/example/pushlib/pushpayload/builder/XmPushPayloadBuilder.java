@@ -14,7 +14,7 @@ import java.util.Map;
 public class XmPushPayloadBuilder implements IPushPayloadBuilder {
     private Map<String, String> mCustomDataMap;
     private NotifyClickAction mClickAction;
-    private String mChannelId = BuildConfig.oppoChannelId;
+    private String mChannelId = BuildConfig.xmChannelId;
 
     @Override
     public IPushPayloadBuilder setPushTitle(String title) {
