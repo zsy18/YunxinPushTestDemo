@@ -17,6 +17,7 @@
     //配置本次打包的应用包名，需要和厂商推送上申请证书用到的包名保持一致
     APPLICATION_ID = "set your applicationId"
 ```
+> 更改 APPLICATION_ID 后同时需要把app模块下的“agconnect-services.json”、“google-services.json”、“mcs-services.json”三个文件删除或者替换成您自己配置文件，否则会导致应用编译报错。
 ### FCM配置
 1. 在pushConfig.gradle文件，添加推送相关配置信息
 ```java
