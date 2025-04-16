@@ -39,6 +39,8 @@ import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
+import com.xiaomi.mipush.sdk.MiPushMessage;
+import com.xiaomi.mipush.sdk.PushMessageHelper;
 
 
 import java.lang.reflect.InvocationTargetException;
@@ -81,9 +83,15 @@ public class MainActivity extends AppCompatActivity {
         Intent intent = getIntent();
         intent.getExtras();
         String sessionID = intent.getStringExtra(SESSION);
+        if (TextUtils.isEmpty(sessionID)) {
+            //小米推送sdk内部特殊处理，把自定义字段放到了MiPushMessage对象里了。
+            MiPushMessage pushMessage = (MiPushMessage) intent.getSerializableExtra(PushMessageHelper.KEY_MESSAGE);
+            if (pushMessage != null && !pushMessage.getExtra().isEmpty()) {
+                sessionID = pushMessage.getExtra().get(SESSION);
+            }
+        }
         if (!TextUtils.isEmpty(sessionID)) {
             Toast.makeText(this, SESSION + ":" + sessionID, Toast.LENGTH_SHORT).show();
-
         }
     }
 
@@ -258,7 +266,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
         boolean isHonor = isHonorNewDevice();
-        Log.e("mytest","isHonor:"+isHonor);
+        Log.e("mytest", "isHonor:" + isHonor);
 
     }
 

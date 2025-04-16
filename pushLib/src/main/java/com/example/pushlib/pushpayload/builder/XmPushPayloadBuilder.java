@@ -40,6 +40,24 @@ public class XmPushPayloadBuilder implements IPushPayloadBuilder {
         return null;
     }
 
+    /**
+     * 客户端在相应的Activity中可以调用Intent的getSerializableExtra（PushMessageHelper.KEY_MESSAGE）方法得到MiPushMessage对象
+     * 小米官网文档：https://dev.mi.com/xiaomihyperos/documentation/detail?pId=1543#_3
+     * 坑比小米规则：
+     * 1、打开首页
+     * * 不设置notify_effect，MiPushMessage对象为空，intent中自定义字段存在。
+     * * 设置notify_effect，MiPushMessage对象不为空且其extra字段里存在自定义字段，intent中不存在自定义字段存在。
+     * 2、通过action的方式打开指定页面：
+     * MiPushMessage对象不为空且其extra字段里存在自定义字段，intent中不存在自定义字
+     * 3、通过指定Activity的方式打开页面：
+     * MiPushMessage对象不为空且其extra字段里存在自定义字段，intent中不存在自定义字
+     * 4、通过指定data的方式打开页面：
+     * * 自定义参数通过intentUri中携带：MiPushMessage对象其extra字段里不存在自定义字段，intent中存在自定义字
+     * * 自定义参数通过payload中携带：MiPushMessage对象其extra字段里存在自定义字段，intent中不存在自定义字
+     * * intentUri中和payload中都携带：MiPushMessage对象其extra字段里存在自定义字段，intent中存在自定义字
+     * @param clickAction
+     * @return
+     */
     @Override
     public IPushPayloadBuilder setClickAction(NotifyClickAction clickAction) {
         this.mClickAction = clickAction;

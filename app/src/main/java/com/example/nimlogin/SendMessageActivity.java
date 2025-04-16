@@ -94,7 +94,7 @@ public class SendMessageActivity extends AppCompatActivity {
         IMMessage message = MessageBuilder.createTextMessage(toAccid, SessionTypeEnum.P2P, content);
         message.setPushPayload(getPushPayload(swClickNotify.isChecked(), swCustomData.isChecked()));
         //如需自定义推送内容，则需要直接通过IMMessage#setPushContent设置，不配置默认使用消息内容。
-//        message.setPushContent("测试测试测试");
+        message.setPushContent("测试测试测试");
         NIMClient.getService(MsgService.class).sendMessage(message, false).setCallback(new RequestCallbackWrapper<Void>() {
             @Override
             public void onResult(int code, Void result, Throwable exception) {
@@ -159,6 +159,7 @@ public class SendMessageActivity extends AppCompatActivity {
         }
 
         PushPayloadBuilder builder = new PushPayloadBuilder();
+        builder.setPushTitle("myTestTitle");
         NotifyClickAction clickAction;
 
         if (clickActionEnable) {
