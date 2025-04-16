@@ -4,9 +4,14 @@ import com.example.pushlib.pushpayload.IPushPayloadBuilder;
 import com.example.pushlib.pushpayload.NotifyClickAction;
 import com.example.pushlib.pushpayload.PushPayloadBuilderType;
 
+import java.util.HashMap;
 import java.util.Map;
 
 public class APNsPushPayloadBuilder implements IPushPayloadBuilder {
+    private Map<String, String> mCustomDataMap;
+    private Map<String, Object> payloadMap = new HashMap<>();
+
+
     @Override
     public IPushPayloadBuilder setPushTitle(String title) {
         return null;
@@ -14,6 +19,10 @@ public class APNsPushPayloadBuilder implements IPushPayloadBuilder {
 
     @Override
     public IPushPayloadBuilder addCustomData(String key, String data) {
+        if (mCustomDataMap == null) {
+            mCustomDataMap = new HashMap<>();
+        }
+        mCustomDataMap.put(key, data);
         return null;
     }
 
@@ -39,6 +48,11 @@ public class APNsPushPayloadBuilder implements IPushPayloadBuilder {
 
     @Override
     public Map<String, Object> generatePayload() {
-        return null;
+        if (mCustomDataMap!=null&& !mCustomDataMap.isEmpty()){
+            payloadMap.putAll(mCustomDataMap);
+            return payloadMap;
+        }else {
+            return null;
+        }
     }
 }

@@ -52,6 +52,8 @@ android {
         buildConfigField "String","mzCertificateName","\"${rootProject.ext.mzCertificateName}\""
         buildConfigField "String","mzChannelId","\"${rootProject.ext.mzChannelId}\""
 
+        buildConfigField "boolean","apnsEnable","${rootProject.ext.apnsEnable}"
+
 
 
     }
@@ -67,6 +69,7 @@ android {
         targetCompatibility JavaVersion.VERSION_1_8
     }
 }
+println("projectname"+project.name)
 
 dependencies {
 

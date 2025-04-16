@@ -4,6 +4,7 @@ import android.text.TextUtils;
 import android.util.Log;
 
 import com.example.pushlib.BuildConfig;
+import com.example.pushlib.pushpayload.builder.APNsPushPayloadBuilder;
 import com.example.pushlib.pushpayload.builder.FcmPushPayloadBuilder;
 import com.example.pushlib.pushpayload.builder.FcmV1PushPayloadBuilder;
 import com.example.pushlib.pushpayload.builder.HonorPushPayloadBuilder;
@@ -37,6 +38,7 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
         if (!TextUtils.isEmpty(BuildConfig.honorCertificateName)){
             mBuilderMap.put(PushPayloadBuilderType.HONER, new HonorPushPayloadBuilder());
         }
+
         if (!TextUtils.isEmpty(BuildConfig.vivoCertificateName)){
             mBuilderMap.put(PushPayloadBuilderType.VIVO, new VivoPushPayloadBuilder());
         }
@@ -47,6 +49,11 @@ public class PushPayloadBuilder implements IPushPayloadBuilder {
                 mBuilderMap.put(PushPayloadBuilderType.FCM, new FcmPushPayloadBuilder());
             }
         }
+        if (BuildConfig.apnsEnable){
+            mBuilderMap.put(PushPayloadBuilderType.APNS, new APNsPushPayloadBuilder());
+        }
+
+
     }
 
     /**

@@ -113,6 +113,10 @@ ext {
     // 传入云信控制台上配置的魅族推送证书名称
     mzCertificateName = "meizuTest"
     mzChannelId = ""
+    /**
+     * 生成的payload是否包含APNS字段
+     */
+    apnsEnable = true
 }
 
 //添加标志位，保证只执行一次
