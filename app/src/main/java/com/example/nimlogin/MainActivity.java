@@ -68,7 +68,7 @@ public class MainActivity extends AppCompatActivity {
         registerImListener(true);
         checkPermission();
         //关闭消息提醒，防止干扰推送测试。
-        NIMClient.toggleNotification(true);
+        NIMClient.toggleNotification(false);
         for (String channelId : channelIds) {
             if (!TextUtils.isEmpty(channelId)) {
                 buildMessageChannel(channelId);
