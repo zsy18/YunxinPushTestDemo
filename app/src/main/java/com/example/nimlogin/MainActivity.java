@@ -39,6 +39,19 @@ import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
 import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
+import com.netease.nimlib.sdk.v2.V2NIMError;
+import com.netease.nimlib.sdk.v2.V2NIMFailureCallback;
+import com.netease.nimlib.sdk.v2.V2NIMSuccessCallback;
+import com.netease.nimlib.sdk.v2.auth.V2NIMLoginDetailListener;
+import com.netease.nimlib.sdk.v2.auth.V2NIMLoginListener;
+import com.netease.nimlib.sdk.v2.auth.V2NIMLoginService;
+import com.netease.nimlib.sdk.v2.auth.enums.V2NIMConnectStatus;
+import com.netease.nimlib.sdk.v2.auth.enums.V2NIMDataSyncState;
+import com.netease.nimlib.sdk.v2.auth.enums.V2NIMDataSyncType;
+import com.netease.nimlib.sdk.v2.auth.enums.V2NIMLoginClientChange;
+import com.netease.nimlib.sdk.v2.auth.enums.V2NIMLoginStatus;
+import com.netease.nimlib.sdk.v2.auth.model.V2NIMKickedOfflineDetail;
+import com.netease.nimlib.sdk.v2.auth.model.V2NIMLoginClient;
 import com.xiaomi.mipush.sdk.MiPushMessage;
 import com.xiaomi.mipush.sdk.PushMessageHelper;
 
@@ -49,6 +62,7 @@ import java.net.URISyntaxException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+    private static final String TAG = "MainActivity";
     private TextView tvLoginStatus, tvToken;
     private Button btnLogout;
     String[] channelIds = new String[]{
@@ -57,12 +71,9 @@ public class MainActivity extends AppCompatActivity {
             BuildConfig.xmChannelId,
             BuildConfig.fcmChannelId
     };
-    private boolean hasUpdate = false;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        NIMClient.getService(MsgService.class).setChattingAccount(MsgService.MSG_CHATTING_ACCOUNT_NONE, SessionTypeEnum.None);
         setContentView(R.layout.activity_main);
         initView();
         registerImListener(true);
@@ -74,7 +85,6 @@ public class MainActivity extends AppCompatActivity {
                 buildMessageChannel(channelId);
             }
         }
-
     }
 
     @Override
@@ -110,10 +120,25 @@ public class MainActivity extends AppCompatActivity {
         btnLogout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Preferences.saveUserAccount("");
-                Preferences.saveUserToken("");
-                MyApplication.hasLogined = false;
-                NIMClient.getService(AuthService.class).logout();
+
+                // 请勿在 Activity 的 `onDestroy` 中调用 `logout` 方法
+                NIMClient.getService(V2NIMLoginService.class).logout(new V2NIMSuccessCallback<Void>(){
+                    @Override
+                    public void onSuccess(Void o) {
+                        Preferences.saveUserAccount("");
+                        Preferences.saveUserToken("");
+                        LoginActivity.startLoginActivity(MainActivity.this);
+
+                    }
+                }, new V2NIMFailureCallback(){
+                    @Override
+                    public void onFailure(V2NIMError error){
+                        int code = error.getCode();
+                        String desc = error.getDesc();
+                        // TODO
+                    }
+                });
+
             }
         });
         findViewById(R.id.btn_test).setOnClickListener(new View.OnClickListener() {
@@ -124,50 +149,75 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
+    private void registerImListener(boolean register){
+        if (register){
+            NIMClient.getService(V2NIMLoginService.class).addLoginDetailListener(loginDetailListener);
+            NIMClient.getService(V2NIMLoginService.class).addLoginListener(loginListener);
 
-    private void showNotification() {
+
+        }else {
+            NIMClient.getService(V2NIMLoginService.class).removeLoginDetailListener(loginDetailListener);
+            NIMClient.getService(V2NIMLoginService.class).removeLoginListener(loginListener);
 
 
-// 创建通知
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, "channel_id")
-                .setContentTitle("My Notification")
-                .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentText("This is a notification message")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT);
-
-// 点击通知后跳转到特定的 Activity
-        NotifyClickAction clickAction = new NotifyClickAction.Builder()
-                .setIntentAction("android.intent.action.VIEW")
-                .addIntentCategory("android.intent.category.DEFAULT")
-                .setNotifyEffect(NotifyEffectMode.EFFECT_MODE_CONTENT)
-                .setIntentDataScheme("im")
-                .setIntentDataHost(com.example.nimlogin.BuildConfig.APPLICATION_ID)
-                .setIntentDataPath("/p2pPage?")
-                .build();
-        Intent intent = null;
-
-        try {
-            String click = clickAction.getIntentFilterString();
-            Log.e("ActivityTaskManager", click);
-            intent = Intent.parseUri(click, Intent.URI_INTENT_SCHEME);
-        } catch (URISyntaxException e) {
-            throw new RuntimeException(e);
         }
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_IMMUTABLE);
-        builder.setContentIntent(pendingIntent);
-        builder.setChannelId("1");
-
-        // 显示通知
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
-        notificationManager.notify(1, builder.build());
-    }
-
-    private void registerImListener(boolean register) {
-        NIMClient.getService(AuthServiceObserver.class).observeOnlineStatus(onlineStatusObserver, register);
-        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver, register);
         NIMClient.getService(MixPushServiceObserve.class).observeMixPushToken(mixPushTokenObserver, register);
+        NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver,register);
     }
 
+    private V2NIMLoginDetailListener loginDetailListener = new V2NIMLoginDetailListener() {
+
+        @Override
+        public void onConnectStatus(V2NIMConnectStatus status) {
+            Log.e(TAG,"loginDetailListener onConnectStatus:"+status.toString());
+
+            switch (status){
+                case V2NIM_CONNECT_STATUS_DISCONNECTED:
+                    break;
+                case V2NIM_CONNECT_STATUS_CONNECTING:
+                    break;
+                case V2NIM_CONNECT_STATUS_CONNECTED:
+                    break;
+                case V2NIM_CONNECT_STATUS_WAITING:
+                    break;
+
+            }
+        }
+
+        @Override
+        public void onDisconnected(V2NIMError error) {
+            Log.e(TAG,"loginDetailListener onDisconnected:"+error.toString());
+
+        }
+
+        @Override
+        public void onConnectFailed(V2NIMError error) {
+            Log.e(TAG,"loginDetailListener onConnectFailed:"+error.toString());
+
+        }
+
+        @Override
+        public void onDataSync(V2NIMDataSyncType type, V2NIMDataSyncState state, V2NIMError error) {
+            // TODO
+        }
+    };
+    private V2NIMLoginListener loginListener = new V2NIMLoginListener() {
+        @Override
+        public void onLoginStatus(V2NIMLoginStatus status) {
+            Log.e(TAG,"loginListener onLoginStatus:"+status.toString());
+        }
+        @Override
+        public void onLoginFailed(V2NIMError error) {
+            Log.e(TAG,"loginListener onLoginFailed:"+error.toString());
+        }
+        @Override
+        public void onKickedOffline(V2NIMKickedOfflineDetail detail) {
+            Log.e(TAG,"loginListener onKickedOffline:"+detail.toString());
+        }
+        @Override
+        public void onLoginClientChanged(V2NIMLoginClientChange change, List<V2NIMLoginClient> clients) {
+        }
+    };
     private void checkPermission() {
         String permission = "android.permission.POST_NOTIFICATIONS";
         boolean hasPermission = ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED;
@@ -197,68 +247,6 @@ public class MainActivity extends AppCompatActivity {
         public void onEvent(List<IMMessage> imMessages) {
             String toast = "收到消息，会话：" + imMessages.get(0).getSessionId();
             Toast.makeText(MainActivity.this, toast, Toast.LENGTH_SHORT).show();
-        }
-    };
-    /**
-     * 用户在线状态观察者
-     */
-    private Observer<StatusCode> onlineStatusObserver = new Observer<StatusCode>() {
-
-        @Override
-        public void onEvent(StatusCode statusCode) {
-            String userStatus = null;
-            switch (statusCode) {
-                case INVALID:
-                    userStatus = "未定义";
-                    break;
-                case UNLOGIN:
-                    userStatus = "未登录";
-                    break;
-                case LOGINED:
-                    userStatus = "成功登录";
-                    break;
-                case NET_BROKEN:
-                    userStatus = "网络连接已断开";
-                    break;
-                case CONNECTING:
-                    userStatus = "正在连接服务器";
-                    break;
-                case LOGINING:
-                    userStatus = "正在登录中";
-                    break;
-                case SYNCING:
-                    userStatus = "正在同步数据";
-                    break;
-                case KICKOUT:
-                    userStatus = "被其他端的登录踢掉";
-                    break;
-                case KICK_BY_OTHER_CLIENT:
-                    userStatus = "被同时在线的其他端主动踢掉";
-                    break;
-                case FORBIDDEN:
-                    userStatus = "被服务器禁止登录";
-                    break;
-                case VER_ERROR:
-                    userStatus = "客户端版本错误";
-                    break;
-                case PWD_ERROR:
-                    userStatus = "用户名或密码错误";
-                    break;
-//                case NEED_RECONNECT:
-//                    userStatus = "需要重连";
-//                    break;
-//                case NEED_CHANGE_LBS:
-//                    userStatus = "需要更新LBS";
-//                    break;
-                default:
-                    break;
-            }
-            tvLoginStatus.setText(userStatus);
-            Log.e("mytest", "登录状态：" + userStatus);
-            //判断当前状态是否要进行手动登录。
-            if (LoginActivity.shouldJumpToLoginActivity()) {
-                LoginActivity.startLoginActivity(MainActivity.this);
-            }
         }
     };
 

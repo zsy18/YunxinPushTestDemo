@@ -54,6 +54,15 @@
         android:theme="@style/Theme.NIMLogin"
         tools:targetApi="31">
         <activity
+            android:name=".SplashActivity"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
             android:name=".NotificationClassClickActivity"
             android:exported="false"
             android:label="ClassClickActivity"
@@ -85,7 +94,7 @@
             android:label="DataClickActivity">
             <intent-filter>
                 <action android:name="android.intent.action.VIEW" />
-                <!--荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category-->
+                <!-- 荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category -->
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
 
@@ -103,18 +112,11 @@
             android:exported="false" />
         <activity
             android:name=".MainActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
+            android:exported="false"
+            android:launchMode="singleTask">
         </activity> <!-- 云信后台服务，请使用独立进程。 -->
         <service
             android:name="com.netease.nimlib.service.NimService"
-            android:process=":core" /> <!-- 云信后台辅助服务 -->
-        <service
-            android:name="com.netease.nimlib.service.NimService$Aux"
             android:process=":core" /> <!-- 云信后台辅助服务 -->
         <service
             android:name="com.netease.nimlib.job.NIMJobService"
