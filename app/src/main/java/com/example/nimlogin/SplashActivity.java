@@ -9,8 +9,8 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.netease.nimlib.sdk.NIMClient;
-import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.v2.V2NIMError;
+import com.netease.nimlib.sdk.v2.V2NIMErrorCode;
 import com.netease.nimlib.sdk.v2.V2NIMFailureCallback;
 import com.netease.nimlib.sdk.v2.V2NIMSuccessCallback;
 import com.netease.nimlib.sdk.v2.auth.V2NIMLoginListener;
@@ -29,7 +29,14 @@ public class SplashActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_splash);
+        setContentView(R.layout.activity_welcom);
+  
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        // 模拟第再打开app，自动登录登录 。
         String account = Preferences.getUserAccount();
         String token = Preferences.getUserToken();
         if (!TextUtils.isEmpty(account) && !TextUtils.isEmpty(token)) {
@@ -39,6 +46,7 @@ public class SplashActivity extends AppCompatActivity {
             finish();
         }
     }
+
     private V2NIMLoginListener loginListener = new V2NIMLoginListener() {
         @Override
         public void onLoginStatus(V2NIMLoginStatus status) {
@@ -81,13 +89,23 @@ public class SplashActivity extends AppCompatActivity {
                     new V2NIMFailureCallback() {
                     @Override
                     public void onFailure(V2NIMError error) {
-                        Preferences.saveUserAccount("");
-                        Preferences.saveUserToken("");
-                        //自动登录失败，返回登录页面
-                        int code = error.getCode();
-                        String desc = error.getDesc();
-                        Toast.makeText(SplashActivity.this, R.string.tip_login_fail+",code:"+code+",desc:"+desc, Toast.LENGTH_SHORT).show();
-                        LoginActivity.startLoginActivity(SplashActivity.this);
+                        Log.e(TAG,"login  onFailure");
+
+                        if (V2NIMErrorCode.V2NIM_ERROR_CODE_IN_OFFLINE_MODE.getCode() == error.getCode()) {
+                            //进入离线模式，数据已经打开，跳转到主页面
+                            Intent intent = new Intent(SplashActivity.this,MainActivity.class);
+                            //把启动页收到的推送数据传递给主页面。
+                            intent.putExtras(getIntent());
+                            startActivity(intent);
+                        }else {
+                            Preferences.saveUserAccount("");
+                            Preferences.saveUserToken("");
+                            //自动登录失败，返回登录页面
+                            int code = error.getCode();
+                            String desc = error.getDesc();
+                            Toast.makeText(SplashActivity.this, R.string.tip_login_fail+",code:"+code+",desc:"+desc, Toast.LENGTH_SHORT).show();
+                            LoginActivity.startLoginActivity(SplashActivity.this);
+                        }
                         finish();
                     }
                 });
