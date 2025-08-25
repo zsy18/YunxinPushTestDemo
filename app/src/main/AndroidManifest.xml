@@ -2,14 +2,14 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools">
 
+    <uses-permission android:name="android.permission.INTERNET" /> <!-- 访问网络状态 -->
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.CAMERA" />
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 访问网络状态 -->
-    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" /> <!-- 外置存储存取权限 -->
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.ACCESS_WIFI_STATE" />
-    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" /> <!-- 外置存储存取权限 -->
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CHANGE_WIFI_STATE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" /> <!-- 多媒体相关 -->
     <uses-permission android:name="android.permission.RECORD_AUDIO" /> <!-- Android11：V8.6.1及之后的版本不需要；其他：V4.4.0及之后的版本不需要 -->
     <uses-permission android:name="android.permission.READ_PHONE_STATE" /> <!-- 控制呼吸灯，振动器等，用于新消息提醒 -->
@@ -73,7 +73,7 @@
             android:label="NotificationActionClickActivity">
             <intent-filter>
                 <action android:name="${applicationId}.openP2PView" />
-                <!--荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category-->
+                <!-- 荣耀推送必须要配置BROWSABLE，他们启动页面的时候会默认添加这个category -->
                 <category android:name="android.intent.category.BROWSABLE" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
