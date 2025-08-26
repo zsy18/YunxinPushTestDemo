@@ -13,9 +13,6 @@ import android.widget.EditText;
 import android.widget.Toast;
 
 import com.netease.nimlib.sdk.NIMClient;
-import com.netease.nimlib.sdk.RequestCallback;
-import com.netease.nimlib.sdk.StatusCode;
-import com.netease.nimlib.sdk.auth.AuthService;
 import com.netease.nimlib.sdk.auth.LoginInfo;
 import com.netease.nimlib.sdk.v2.V2NIMError;
 import com.netease.nimlib.sdk.v2.V2NIMFailureCallback;
@@ -59,7 +56,9 @@ public class LoginActivity extends AppCompatActivity {
         hasStart = false;
     }
 
-    public static void startLoginActivity(Context context){
+    public static void startLoginActivityAndCleanAccount(Context context){
+        Preferences.saveUserAccount("");
+        Preferences.saveUserToken("");
         hasStart = true;
         Intent intent = new Intent(context,LoginActivity.class);
         context.startActivity(intent);
@@ -85,9 +84,9 @@ public class LoginActivity extends AppCompatActivity {
         LoginInfo loginInfo = new LoginInfo(accid,token);
         V2NIMLoginOption option = new V2NIMLoginOption();
         //启动离线模式。
-        option.setOfflineMode(true);
+        option.setOfflineMode(false);
         //本次登录用户手动输入账号密码，所以走强制模式登录。
-//        option.setForceMode(true);
+        option.setForceMode(true);
         NIMClient.getService(V2NIMLoginService.class).login(accid, token, option, new V2NIMSuccessCallback<Void>() {
                     @Override
                     public void onSuccess(Void unused) {
@@ -106,8 +105,6 @@ public class LoginActivity extends AppCompatActivity {
                 new V2NIMFailureCallback() {
                     @Override
                     public void onFailure(V2NIMError error) {
-                        Preferences.saveUserAccount("");
-                        Preferences.saveUserToken("");
                         //自动登录失败，返回登录页面
                         int code = error.getCode();
                         String desc = error.getDesc();

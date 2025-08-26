@@ -4,18 +4,14 @@ import static com.example.nimlogin.NotificationDataClickActivity.SESSION;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
-import androidx.core.app.NotificationCompat;
-import androidx.core.app.NotificationManagerCompat;
 import androidx.core.content.ContextCompat;
 
 import android.annotation.TargetApi;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
-import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -26,28 +22,17 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.pushlib.BuildConfig;
-import com.example.pushlib.pushpayload.NotifyClickAction;
-import com.example.pushlib.pushpayload.NotifyEffectMode;
 import com.netease.nimlib.sdk.NIMClient;
 import com.netease.nimlib.sdk.Observer;
-import com.netease.nimlib.sdk.StatusCode;
-import com.netease.nimlib.sdk.auth.AuthService;
-import com.netease.nimlib.sdk.auth.AuthServiceObserver;
 import com.netease.nimlib.sdk.mixpush.MixPushServiceObserve;
 import com.netease.nimlib.sdk.mixpush.model.MixPushToken;
-import com.netease.nimlib.sdk.msg.MsgService;
 import com.netease.nimlib.sdk.msg.MsgServiceObserve;
-import com.netease.nimlib.sdk.msg.constant.SessionTypeEnum;
 import com.netease.nimlib.sdk.msg.model.IMMessage;
 import com.netease.nimlib.sdk.v2.V2NIMError;
 import com.netease.nimlib.sdk.v2.V2NIMFailureCallback;
 import com.netease.nimlib.sdk.v2.V2NIMSuccessCallback;
-import com.netease.nimlib.sdk.v2.auth.V2NIMLoginDetailListener;
 import com.netease.nimlib.sdk.v2.auth.V2NIMLoginListener;
 import com.netease.nimlib.sdk.v2.auth.V2NIMLoginService;
-import com.netease.nimlib.sdk.v2.auth.enums.V2NIMConnectStatus;
-import com.netease.nimlib.sdk.v2.auth.enums.V2NIMDataSyncState;
-import com.netease.nimlib.sdk.v2.auth.enums.V2NIMDataSyncType;
 import com.netease.nimlib.sdk.v2.auth.enums.V2NIMLoginClientChange;
 import com.netease.nimlib.sdk.v2.auth.enums.V2NIMLoginStatus;
 import com.netease.nimlib.sdk.v2.auth.model.V2NIMKickedOfflineDetail;
@@ -58,7 +43,6 @@ import com.xiaomi.mipush.sdk.PushMessageHelper;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.net.URISyntaxException;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
@@ -125,9 +109,8 @@ public class MainActivity extends AppCompatActivity {
                 NIMClient.getService(V2NIMLoginService.class).logout(new V2NIMSuccessCallback<Void>(){
                     @Override
                     public void onSuccess(Void o) {
-                        Preferences.saveUserAccount("");
-                        Preferences.saveUserToken("");
-                        LoginActivity.startLoginActivity(MainActivity.this);
+
+                        LoginActivity.startLoginActivityAndCleanAccount(MainActivity.this);
 
                     }
                 }, new V2NIMFailureCallback(){
@@ -151,12 +134,10 @@ public class MainActivity extends AppCompatActivity {
     }
     private void registerImListener(boolean register){
         if (register){
-            NIMClient.getService(V2NIMLoginService.class).addLoginDetailListener(loginDetailListener);
             NIMClient.getService(V2NIMLoginService.class).addLoginListener(loginListener);
 
 
         }else {
-            NIMClient.getService(V2NIMLoginService.class).removeLoginDetailListener(loginDetailListener);
             NIMClient.getService(V2NIMLoginService.class).removeLoginListener(loginListener);
 
 
@@ -164,54 +145,38 @@ public class MainActivity extends AppCompatActivity {
         NIMClient.getService(MixPushServiceObserve.class).observeMixPushToken(mixPushTokenObserver, register);
         NIMClient.getService(MsgServiceObserve.class).observeReceiveMessage(receiveMessageObserver,register);
     }
-
-    private V2NIMLoginDetailListener loginDetailListener = new V2NIMLoginDetailListener() {
-
-        @Override
-        public void onConnectStatus(V2NIMConnectStatus status) {
-            Log.e(TAG,"loginDetailListener onConnectStatus:"+status.toString());
-
-            switch (status){
-                case V2NIM_CONNECT_STATUS_DISCONNECTED:
-                    break;
-                case V2NIM_CONNECT_STATUS_CONNECTING:
-                    break;
-                case V2NIM_CONNECT_STATUS_CONNECTED:
-                    break;
-                case V2NIM_CONNECT_STATUS_WAITING:
-                    break;
-
-            }
-        }
-
-        @Override
-        public void onDisconnected(V2NIMError error) {
-            Log.e(TAG,"loginDetailListener onDisconnected:"+error.toString());
-
-        }
-
-        @Override
-        public void onConnectFailed(V2NIMError error) {
-            Log.e(TAG,"loginDetailListener onConnectFailed:"+error.toString());
-
-        }
-
-        @Override
-        public void onDataSync(V2NIMDataSyncType type, V2NIMDataSyncState state, V2NIMError error) {
-            // TODO
-        }
-    };
     private V2NIMLoginListener loginListener = new V2NIMLoginListener() {
         @Override
         public void onLoginStatus(V2NIMLoginStatus status) {
+            switch (status){
+                case V2NIM_LOGIN_STATUS_LOGOUT:
+                    tvLoginStatus.setText("登出");
+                    break;
+                case V2NIM_LOGIN_STATUS_UNLOGIN:
+                    tvLoginStatus.setText("未登录");
+                    break;
+                case V2NIM_LOGIN_STATUS_LOGINING:
+                    tvLoginStatus.setText("登录中");
+
+                    break;
+                case V2NIM_LOGIN_STATUS_LOGINED:
+                    tvLoginStatus.setText("登录成功");
+                    break;
+            }
             Log.e(TAG,"loginListener onLoginStatus:"+status.toString());
         }
         @Override
         public void onLoginFailed(V2NIMError error) {
+            tvLoginStatus.setText("登录失败");
             Log.e(TAG,"loginListener onLoginFailed:"+error.toString());
         }
         @Override
         public void onKickedOffline(V2NIMKickedOfflineDetail detail) {
+            //自动登录失败，返回登录页面
+            int code = detail.getReason().getValue();
+            String desc = detail.getReasonDesc();
+            Toast.makeText(MainActivity.this, R.string.tip_login_fail+",code:"+code+",desc:"+desc, Toast.LENGTH_SHORT).show();
+            LoginActivity.startLoginActivityAndCleanAccount(MainActivity.this);
             Log.e(TAG,"loginListener onKickedOffline:"+detail.toString());
         }
         @Override
